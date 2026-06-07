@@ -1,6 +1,5 @@
-import { defineConfig } from 'tailwindcss/defaultConfig';
-
-export default defineConfig({
+/** @type {import('tailwindcss').Config} */
+export default {
   content: [
     './index.html',
     './src/**/*.{vue,js,ts,jsx,tsx}',
@@ -16,4 +15,4 @@ export default defineConfig({
     },
   },
   plugins: [],
-});
+};
