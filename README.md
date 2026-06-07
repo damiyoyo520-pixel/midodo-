@@ -1,295 +1,587 @@
-# 🎬 短剧交易平台
+# 短剧创作交易平台
 
-一个基于 AI 驱动的短剧创作、交易、分发平台。集成了剧本生成、文本转视频、数字资产交易等核心功能。
+> 让创意更有价值 - 集 SaaS 创作工作流、多边交易市场、创作者分销生态于一体的综合性 Web 平台
 
-## 🎯 核心功能
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](package.json)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](tsconfig.json)
+[![Docker](https://img.shields.io/badge/Docker-Compose-blue.svg)](docker-compose.prod.yml)
 
-- ✅ **AI 剧本生成**：基于 ChatGLM 的智能创作辅助
-- ✅ **短剧交易系统**：完整的买卖、支付、提现流程
-- ✅ **文本转视频**：集成 ModelScope 自动生成短视频
-- ✅ **创作者生态**：版权保护、收益分配、创作者认证
-- ✅ **数字资产**：NFT、数字版权管理（可选）
-- ✅ **内容库**：剧本模板、素材库、分类管理
+## 📋 目录
 
-## 📊 技术栈
+- [项目简介](#项目简介)
+- [核心功能](#核心功能)
+- [技术架构](#技术架构)
+- [快速开始](#快速开始)
+- [环境配置](#环境配置)
+- [开发指南](#开发指南)
+- [部署指南](#部署指南)
+- [API 文档](#api-文档)
+- [优化建议](#优化建议)
+- [许可证](#许可证)
 
-### 后端
-- **框架**：Medusa.js (Node.js + TypeScript)
-- **数据库**：PostgreSQL
-- **缓存**：Redis
-- **消息队列**：Bull (Redis-based)
-- **支付**：支付宝、微信支付
-- **存储**：Minio / AWS S3
+## 🎯 项目简介
 
-### 前端
-- **框架**：Vue 3 + TypeScript
-- **构建**：Vite
-- **UI**：Ant Design Vue / TailwindCSS
-- **状态管理**：Pinia
-- **HTTP 客户端**：Axios
+短剧创作交易平台是一个完整的全栈 Web 应用，提供：
 
-### AI/ML
-- **剧本生成**：ChatGLM-6B / API
-- **文本转视频**：ModelScope
-- **图片生成**：Stable Diffusion（可选）
+- 🔍 剧本市场与交易撮合引擎
+- ✍️ SaaS 级在线创作工作流
+- 🌐 社区与内容生态
+- 📊 创作者分销与会员体系
+- 🔒 安全交易与版权保护
 
-## 🏗️ 项目结构
+## 🚀 核心功能
+
+### 前端功能
+
+| 功能模块 | 状态 | 说明 |
+|---------|------|------|
+| 首页门户 | ✅ | 政务风设计、AI 生成海报、双轨搜索 |
+| 剧本市场 | ✅ | 分类浏览、搜索筛选、详情查看 |
+| 三大专区 | ✅ | 海外/文旅/非遗，AI 海报展示 |
+| 完整交易闭环 | ✅ | 详情 → 确认 → 支付 → 成功 → 下载 |
+| 用户中心 | 🔄 | 订单管理、个人资料、收藏等 |
+| 创作中心 | 🔄 | 在线编辑器、大纲生成、分镜设计 |
+
+### 后端功能
+
+| 功能模块 | 状态 | 说明 |
+|---------|------|------|
+| 用户认证 | ✅ | JWT 认证、角色权限管理 |
+| 剧本 API | ✅ | CRUD、搜索、分类、统计 |
+| 订单系统 | ✅ | 订单创建、支付、状态跟踪 |
+| 安全中间件 | ✅ | 限流、CORS、XSS、CSRF 保护 |
+| 错误处理 | ✅ | 统一错误响应、日志记录 |
+| 数据模型 | ✅ | 用户、剧本、订单完整 Schema |
+
+## 🏗️ 技术架构
+
+### 前端技术栈
 
 ```
-midodo-/
-├── backend/                    # Medusa 后端
-│   ├── src/
-│   │   ├── models/            # 数据模型（Script, Order, Creator等）
-│   │   ├── services/          # 业务服务
-│   │   ├── routes/            # API 路由
-│   │   ├── jobs/              # 异步任务（视频转换、邮件等）
-│   │   ├── ai/                # AI 模块集成
-│   │   ├── middlewares/       # 中间件
-│   │   ├── utils/             # 工具函数
-│   │   └── index.ts           # 入口
-│   ├── migrations/            # 数据库迁移
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-├── frontend/                   # Vue 3 前端
-│   ├── src/
-│   │   ├── components/        # 组件库
-│   │   ├── pages/             # 页面
-│   │   ├── stores/            # 状态管理（Pinia）
-│   │   ├── services/          # API 服务
-│   │   ├── assets/            # 静态资源
-│   │   ├── types/             # TypeScript 类型定义
-│   │   ├── App.vue
-│   │   └── main.ts
-│   ├── vite.config.ts
-│   ├── package.json
-│   └── .env.example
-├── docker-compose.yml         # 本地开发环境
-├── .env.example               # 环境变量模板
-├── .gitignore
-├── docs/                      # 文档
-└── scripts/                   # 初始化脚本
+Vue 3.3 + TypeScript 5
+├── Vue Router 4 (路由管理)
+├── Pinia (状态管理)
+├── Tailwind CSS 3 (样式方案)
+├── Ant Design Vue 4 (UI 组件)
+├── Vite 4 (构建工具)
+└── Axios (HTTP 客户端)
 ```
 
-## 🚀 快速开始
+### 后端技术栈
 
-### 前置要求
-- Node.js 18+
-- PostgreSQL 14+
-- Redis 7+
-- Docker & Docker Compose
+```
+Node.js 20 + TypeScript 5
+├── Express 4 (Web 框架)
+├── Mongoose 7 (MongoDB ODM)
+├── JWT (身份认证)
+├── Zod (数据验证)
+├── Winston (日志系统)
+└── Helmet/CORS (安全中间件)
+```
 
-### 一键启动（推荐）
+### 数据库
+
+- **MongoDB 7.0**: 主数据存储
+- **Redis 7.2**: 缓存与会话存储（可选）
+
+### 部署架构
+
+```
+┌─────────────────────────────────────────┐
+│         Nginx (Reverse Proxy)          │
+│          (SSL + Load Balance)          │
+└──────────────┬────────────────────────┘
+               │
+        ┌──────┴──────┐
+        │             │
+┌───────▼──────┐ ┌───▼──────────┐
+│   Frontend   │ │   Backend    │
+│  (Vue + Nginx)│ │ (Express API)│
+└───────┬──────┘ └───┬──────────┘
+        │            │
+        └──────┬─────┘
+               │
+        ┌──────┴──────┐
+        │             │
+┌───────▼──────┐ ┌───▼──────────┐
+│   MongoDB   │ │    Redis     │
+│  (Database)  │ │   (Cache)    │
+└──────────────┘ └──────────────┘
+```
+
+## 💻 快速开始
+
+### 前置条件
+
+- Node.js >= 18.0.0
+- npm >= 9.0.0 或 yarn >= 1.22.0
+- MongoDB >= 7.0（本地或 Docker）
+- Docker（可选，用于容器化部署）
+
+### 本地开发
+
+#### 1. 克隆项目
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/damiyoyo520-pixel/midodo-.git
-cd midodo-
+git clone <repository-url>
+cd drama-platform
+```
 
-# 2. 启动本地开发环境（Docker）
-docker-compose up -d
+#### 2. 后端启动
 
-# 3. 等待数据库就绪（约 30 秒）
-sleep 30
-
-# 4. 后端初始化
+```bash
 cd backend
+cp .env.example .env
+# 编辑 .env 配置文件
 npm install
-npm run db:migrate
-npm run db:seed
 npm run dev
+```
 
-# 5. 新终端启动前端
+后端服务将在 `http://localhost:3000` 启动
+
+#### 3. 前端启动
+
+```bash
 cd ../frontend
 npm install
 npm run dev
 ```
 
-### 访问地址
-- 🌐 **前端**：http://localhost:5173
-- 🔧 **后端 API**：http://localhost:9000
-- 👨‍💼 **Admin 面板**：http://localhost:7001
-- 📦 **Minio（文件存储）**：http://localhost:9001
-  - 用户名：minioadmin
-  - 密码：minioadmin
+前端服务将在 `http://localhost:5173` 启动
 
-### 环境变量配置
+#### 4. 访问应用
+
+打开浏览器访问 `http://localhost:5173`
+
+### Docker 快速启动
 
 ```bash
-# 复制环境变量模板
+# 使用 Docker Compose 一键启动
 cp .env.example .env
+docker-compose -f docker-compose.prod.yml up -d
 
-# 编辑 .env 填入你的 API 密钥
-vim .env
-```
-
-关键配置项：
-```env
-# 数据库
-DATABASE_URL=postgres://drama_user:drama_password@localhost:5432/drama_db
-
-# Redis
-REDIS_URL=redis://localhost:6379
-
-# AI 配置
-CHATGLM_API_KEY=your_key
-MODELSCOPE_API_KEY=your_key
-
-# 支付配置
-ALIBABA_APPID=your_id
-WECHAT_APPID=your_id
-```
-
-## 📚 文档
-
-- [后端开发指南](./docs/backend-guide.md)
-- [前端开发指南](./docs/frontend-guide.md)
-- [AI 集成指南](./docs/ai-integration.md)
-- [API 文档](./docs/api-docs.md)
-- [部署指南](./docs/deployment.md)
-- [数据库设计](./docs/database-schema.md)
-
-## 🔄 工作流程
-
-### 创作者创建短剧
-```
-创作者输入关键词
-    ↓
-AI 生成剧本框架
-    ↓
-创作者编辑调整
-    ↓
-AI 生成短视频预览
-    ↓
-发布到交易平台
-```
-
-### 买家购买剧本
-```
-浏览剧本/视频
-    ↓
-选择使用权限
-    ↓
-支付（支付宝/微信）
-    ↓
-获得授权下载
-    ↓
-创作者获得收益
-```
-
-## 🧪 API 示例
-
-### 生成剧本
-```bash
-curl -X POST http://localhost:9000/admin/scripts/generate \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "办公室爱情故事",
-    "theme": "都市情感",
-    "keywords": ["上班族", "职场", "爱情"],
-    "length": "short",
-    "style": "comedy"
-  }'
-```
-
-### 创建订单
-```bash
-curl -X POST http://localhost:9000/store/orders \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "script_id": "script_123",
-    "usage_rights": ["personal_use", "commercial"],
-    "payment_method": "alipay"
-  }'
-```
-
-## 🐳 Docker 命令
-
-```bash
-# 启动所有服务
-docker-compose up -d
+# 查看服务状态
+docker-compose -f docker-compose.prod.yml ps
 
 # 查看日志
-docker-compose logs -f
+docker-compose -f docker-compose.prod.yml logs -f
 
 # 停止服务
-docker-compose down
-
-# 删除所有数据（谨慎！）
-docker-compose down -v
+docker-compose -f docker-compose.prod.yml down
 ```
 
-## 🧪 测试
+## ⚙️ 环境配置
+
+### 后端环境变量 (.env)
+
+```env
+# 应用配置
+NODE_ENV=development
+PORT=3000
+
+# 数据库
+MONGODB_URI=mongodb://localhost:27017/drama_platform
+
+# JWT 认证
+JWT_SECRET=your-production-jwt-secret-key-here-change-this
+JWT_EXPIRES_IN=7d
+
+# 安全
+BCRYPT_ROUNDS=12
+
+# Redis（可选）
+REDIS_URL=redis://localhost:6379
+
+# CORS
+CORS_ORIGIN=http://localhost:5173
+
+# 限流
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX=100
+```
+
+### 前端环境变量 (.env)
+
+```env
+VITE_API_BASE_URL=http://localhost:3000/api
+VITE_APP_NAME=短剧创作交易平台
+```
+
+## 🔧 开发指南
+
+### 项目结构
+
+```
+.
+├── backend/                 # 后端代码
+│   ├── src/
+│   │   ├── models/         # 数据模型
+│   │   ├── routes/         # API 路由
+│   │   ├── middleware/     # 中间件
+│   │   ├── utils/          # 工具函数
+│   │   └── index.ts        # 入口文件
+│   ├── package.json
+│   └── tsconfig.json
+├── frontend/               # 前端代码
+│   ├── src/
+│   │   ├── pages/         # 页面组件
+│   │   ├── router/        # 路由配置
+│   │   ├── services/      # API 服务
+│   │   ├── stores/        # 状态管理
+│   │   └── styles/        # 全局样式
+│   ├── package.json
+│   └── vite.config.ts
+├── docker-compose.prod.yml # 生产环境 Docker 配置
+└── README.md              # 本文档
+```
+
+### 代码规范
+
+- **TypeScript**: 严格类型检查，使用 interface/type 定义类型
+- **ESLint**: 代码风格检查
+- **Prettier**: 代码格式化
+- **Git**: 使用 Conventional Commits 规范
+
+### 常用命令
+
+#### 后端
 
 ```bash
-# 后端测试
-cd backend && npm test
+# 开发模式
+npm run dev
 
-# 前端测试
-cd ../frontend && npm test
+# 生产构建
+npm run build
+
+# 类型检查
+npm run type-check
+
+# 代码检查
+npm run lint
+
+# 代码格式化
+npm run format
+
+# 运行测试
+npm test
+```
+
+#### 前端
+
+```bash
+# 开发模式
+npm run dev
+
+# 生产构建
+npm run build
+
+# 预览构建
+npm run preview
+
+# 类型检查
+npm run type-check
 
 # 代码检查
 npm run lint
 ```
 
-## 📦 生产部署
+## 🚀 部署指南
 
-### Docker 生产构建
+### 生产环境部署
+
+#### 1. 准备环境
+
 ```bash
-docker build -f backend/Dockerfile -t drama-backend:latest .
-docker build -f frontend/Dockerfile -t drama-frontend:latest .
+# 复制环境变量
+cp .env.example .env
+
+# 修改生产环境配置
+# 重要：必须修改 JWT_SECRET 等敏感配置
 ```
 
-### Kubernetes 部署
+#### 2. Docker 部署
+
 ```bash
-kubectl apply -f k8s/
+# 构建并启动所有服务
+docker-compose -f docker-compose.prod.yml up -d --build
+
+# 查看服务状态
+docker-compose -f docker-compose.prod.yml ps
+
+# 查看日志
+docker-compose -f docker-compose.prod.yml logs -f backend
+docker-compose -f docker-compose.prod.yml logs -f frontend
 ```
 
-详见 [部署指南](./docs/deployment.md)
+#### 3. 手动部署（不使用 Docker）
 
-## 🤝 贡献指南
+**后端部署:**
 
-欢迎 PR 和 Issue！请确保：
-1. 代码通过 ESLint 检查
-2. 编写单元测试
-3. 更新相关文档
-
-## 📝 提交规范
-
-```
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
+```bash
+cd backend
+npm install
+npm run build
+npm start
 ```
 
-Type:
-- feat: 新功能
-- fix: 修复
-- docs: 文档
-- style: 格式
-- refactor: 重构
-- test: 测试
-- chore: 构建
+**前端部署:**
+
+```bash
+cd frontend
+npm install
+npm run build
+# 使用 nginx 或其他 Web 服务器托管 dist 目录
+```
+
+### 健康检查
+
+- **后端健康检查**: `http://your-domain/health`
+- **前端健康检查**: `http://your-domain/`
+
+### 备份与恢复
+
+#### MongoDB 数据备份
+
+```bash
+# 备份
+docker exec drama-platform-mongodb mongodump --db=drama_platform --out=/data/backup
+
+# 恢复
+docker exec drama-platform-mongodb mongorestore --db=drama_platform /data/backup
+```
+
+## 📖 API 文档
+
+### 认证接口
+
+#### 注册
+
+```
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "username": "demo",
+  "password": "password123"
+}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIs...",
+    "user": { ... }
+  }
+}
+```
+
+#### 登录
+
+```
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+
+Response:
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIs...",
+    "user": { ... }
+  }
+}
+```
+
+### 剧本接口
+
+#### 获取剧本列表
+
+```
+GET /api/scripts?genre=海外&page=1&limit=20
+
+Response:
+{
+  "success": true,
+  "data": {
+    "scripts": [...],
+    "pagination": { ... }
+  }
+}
+```
+
+#### 获取单个剧本
+
+```
+GET /api/scripts/:id
+
+Response:
+{
+  "success": true,
+  "data": {
+    "_id": "66b8e...",
+    "title": "绣娘传",
+    "description": "...",
+    ...
+  }
+}
+```
+
+#### 获取专区剧本
+
+```
+GET /api/scripts/zone/:genre
+
+Response:
+{
+  "success": true,
+  "data": {
+    "scripts": [...],
+    "pagination": { ... }
+  }
+}
+```
+
+### 订单接口
+
+#### 创建订单
+
+```
+POST /api/orders
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "scriptId": "66b8e..."
+}
+
+Response:
+{
+  "success": true,
+  "data": { ... }
+}
+```
+
+#### 支付订单
+
+```
+PUT /api/orders/:id/pay
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "paymentMethod": "wechat"
+}
+```
+
+## 📈 优化建议
+
+### 性能优化
+
+1. **数据库优化**
+   - 添加复合索引优化查询
+   - 使用 Redis 缓存热点数据
+   - 实现查询结果分页和懒加载
+
+2. **前端优化**
+   - 图片懒加载和 CDN 加速
+   - 路由懒加载，减少首屏加载
+   - 使用虚拟列表优化长列表渲染
+   - 启用 gzip 压缩和缓存策略
+
+3. **API 优化**
+   - 实现 GraphQL 或数据聚合接口
+   - 添加请求去重和缓存
+   - 实现 WebSocket 实时更新
+
+### 功能增强
+
+1. **AI 能力增强**
+   - 集成 AI 剧本大纲生成
+   - AI 分镜建议和优化
+   - 智能推荐算法
+
+2. **支付系统**
+   - 接入真实微信支付、支付宝
+   - 实现订单状态 Webhook 回调
+   - 添加退款和争议处理
+
+3. **社交功能**
+   - 用户评论和讨论
+   - 收藏、点赞、分享
+   - 创作者关注系统
+
+### 安全加固
+
+1. **认证安全**
+   - 实现 OAuth2.0 第三方登录
+   - 添加 2FA 双因素认证
+   - 密码强度策略
+
+2. **数据安全**
+   - 敏感字段加密存储
+   - 数据库字段级权限控制
+   - 定期安全审计
+
+3. **防滥用**
+   - 更严格的 API 限流
+   - CAPTCHA 防机器人
+   - 内容审核机制
+
+### 运维优化
+
+1. **监控告警**
+   - 集成 Prometheus + Grafana
+   - 应用性能监控 (APM)
+   - 日志聚合与分析
+
+2. **高可用**
+   - 服务负载均衡
+   - 数据库主从复制
+   - 自动扩缩容策略
+
+## ⚠️ 注意事项
+
+1. **安全配置**
+   - 生产环境必须修改 `JWT_SECRET` 等敏感配置
+   - 启用 HTTPS
+   - 配置正确的 CORS 白名单
+
+2. **数据备份**
+   - 定期备份 MongoDB 数据
+   - 测试备份恢复流程
+   - 重要数据异地备份
+
+3. **日志管理**
+   - 定期清理旧日志
+   - 日志轮转配置
+   - 错误日志监控告警
+
+4. **性能监控**
+   - 监控系统资源使用
+   - 设置合理的告警阈值
+   - 定期进行性能测试
 
 ## 📄 许可证
 
-MIT License - 详见 [LICENSE](./LICENSE)
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
-## 💬 联系方式
+## 🤝 贡献
 
-- GitHub Issues：用于bug报告和功能建议
-- Email：damiyoyo520-pixel@example.com
-- Discord：[加入我们的社区](your-discord-link)
+欢迎提交 Issue 和 Pull Request！
 
-## ⭐ 支持我们
+## 📞 联系方式
 
-如果这个项目对你有帮助，请给个 Star！
+如有问题，请通过以下方式联系：
+
+- 官方邮箱: support@scripthub.com
+- 客服热线: 400-888-8888
 
 ---
 
-**最后更新**：2024年
-**版本**：v0.1.0 (MVP)
+**让创意更有价值** ✨
