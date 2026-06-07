@@ -6,7 +6,7 @@
           <div class="header-container">
             <router-link to="/" class="logo">
               <span class="logo-icon">🎬</span>
-              <span class="logo-text">短剧创作平台</span>
+              <span class="logo-text">短剧创作交易平台</span>
             </router-link>
 
             <a-menu
@@ -96,7 +96,7 @@
 
         <a-layout-footer class="app-footer">
           <div class="footer-content">
-            <p>© 2024 短剧创作平台 - 让创意更有价值</p>
+            <p>© 2026 短剧创作交易平台 - 让创意更有价值</p>
           </div>
         </a-layout-footer>
       </a-layout>
