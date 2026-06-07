@@ -1,5 +1,32 @@
 <template>
   <div class="home-page">
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+      <div class="nav-container">
+        <div class="nav-left">
+          <router-link to="/" class="brand">
+            <span class="brand-icon">🎬</span>
+            <span class="brand-text">短剧创作交易平台</span>
+          </router-link>
+        </div>
+        
+        <div class="nav-center">
+          <router-link to="/home" class="nav-link">首页</router-link>
+          <router-link to="/scripts" class="nav-link">剧本市场</router-link>
+          <router-link to="/zone/global" class="nav-link">海外专区</router-link>
+          <router-link to="/zone/culture" class="nav-link">文旅专区</router-link>
+          <router-link to="/zone/heritage" class="nav-link">非遗专区</router-link>
+          <router-link to="/workspace" class="nav-link">创作中心</router-link>
+          <router-link to="/community" class="nav-link">社区</router-link>
+        </div>
+        
+        <div class="nav-right">
+          <router-link to="/login" class="nav-btn-outline">登录</router-link>
+          <router-link to="/register" class="nav-btn-primary">注册</router-link>
+        </div>
+      </div>
+    </nav>
+
     <!-- 主视觉区 -->
     <section class="hero-section">
       <div class="hero-content">
@@ -215,6 +242,101 @@ const scripts = ref([
 .home-page {
   min-height: 100vh;
   background: #ffffff;
+}
+
+/* 顶部导航 */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: #111827;
+}
+
+.brand-icon {
+  font-size: 24px;
+}
+
+.brand-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.nav-center {
+  display: flex;
+  gap: 32px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #dc2626;
+}
+
+.nav-right {
+  display: flex;
+  gap: 12px;
+}
+
+.nav-btn-outline {
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 2px;
+  text-decoration: none;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.nav-btn-outline:hover {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.nav-btn-primary {
+  padding: 8px 16px;
+  background: #dc2626;
+  border-radius: 2px;
+  text-decoration: none;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.nav-btn-primary:hover {
+  background: #b91c1c;
 }
 
 /* 主视觉区 */
