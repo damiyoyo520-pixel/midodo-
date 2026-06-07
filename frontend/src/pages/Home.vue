@@ -53,7 +53,13 @@
           :to="`/scripts/${script.id}`"
           class="script-card"
         >
-          <div class="script-poster" :style="{ background: script.gradient }">
+          <div class="script-poster">
+            <!-- AI生成的海报图片 -->
+            <img :src="script.image" :alt="script.title" class="poster-image" />
+            
+            <!-- 半透明遮罩 -->
+            <div class="poster-overlay-bg"></div>
+            
             <!-- 光效装饰 -->
             <div class="poster-light-effect"></div>
             
@@ -165,8 +171,7 @@ const scripts = ref([
     price: 399,
     rating: 4.9,
     sales: 186,
-    gradient: 'linear-gradient(180deg, #2d1b4e 0%, #6b2d7b 30%, #c4a5d4 70%, #e8c8e0 100%)',
-    accent: '#f5e6ff'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Chinese%20traditional%20embroidery%20master%20elegant%20woman%20in%20purple%20silk%20dramatic%20lighting%20Hollywood%20movie%20poster%20style&image_size=portrait_4_3'
   },
   {
     id: '2',
@@ -176,8 +181,7 @@ const scripts = ref([
     price: 499,
     rating: 4.8,
     sales: 142,
-    gradient: 'linear-gradient(180deg, #1a0a0a 0%, #8b1a1a 30%, #d4a520 60%, #ff6b35 100%)',
-    accent: '#ffd700'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Peking%20Opera%20performer%20red%20gold%20face%20paint%20traditional%20costume%20epic%20lighting%20Hollywood%20movie%20poster&image_size=portrait_4_3'
   },
   {
     id: '3',
@@ -187,8 +191,7 @@ const scripts = ref([
     price: 349,
     rating: 4.7,
     sales: 234,
-    gradient: 'linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 40%, #ff6b6b 80%, #ffd93d 100%)',
-    accent: '#ffd93d'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=New%20York%20Chinatown%20neon%20lights%20rainy%20night%201980s%20style%20Hollywood%20movie%20poster%20cinematic&image_size=portrait_4_3'
   },
   {
     id: '4',
@@ -198,8 +201,7 @@ const scripts = ref([
     price: 329,
     rating: 4.6,
     sales: 198,
-    gradient: 'linear-gradient(180deg, #000011 0%, #001133 30%, #004488 60%, #00aaff 100%)',
-    accent: '#00aaff'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Tokyo%20night%20neon%20lights%20fashionable%20woman%20silhouette%20blue%20lighting%20cyberpunk%20movie%20poster&image_size=portrait_4_3'
   },
   {
     id: '5',
@@ -209,8 +211,7 @@ const scripts = ref([
     price: 369,
     rating: 4.9,
     sales: 267,
-    gradient: 'linear-gradient(180deg, #1a3a2a 0%, #2d6a4f 30%, #52b788 60%, #95d5b2 100%)',
-    accent: '#95d5b2'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=West%20Lake%20China%20elegant%20woman%20traditional%20costume%20lotus%20water%20mist%20romantic%20movie%20poster&image_size=portrait_4_3'
   },
   {
     id: '6',
@@ -220,8 +221,7 @@ const scripts = ref([
     price: 459,
     rating: 4.9,
     sales: 189,
-    gradient: 'linear-gradient(180deg, #3d2914 0%, #8b5a2b 30%, #dda15e 50%, #f4e4bc 100%)',
-    accent: '#dda15e'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Dunhuang%20flying%20apsaras%20goddess%20golden%20silk%20mural%20epic%20movie%20poster%20Chinese%20traditional&image_size=portrait_4_3'
   },
   {
     id: '7',
@@ -231,8 +231,7 @@ const scripts = ref([
     price: 449,
     rating: 4.8,
     sales: 156,
-    gradient: 'linear-gradient(180deg, #0f0c29 0%, #302b63 30%, #4a3299 50%, #764ba2 100%)',
-    accent: '#764ba2'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Spaceship%20galaxy%20alien%20planet%20sci-fi%20epic%20movie%20poster%20cosmic%20stars%20dramatic%20lighting&image_size=portrait_4_3'
   },
   {
     id: '8',
@@ -242,8 +241,7 @@ const scripts = ref([
     price: 399,
     rating: 4.7,
     sales: 212,
-    gradient: 'linear-gradient(180deg, #000000 0%, #1a1a2e 40%, #2d2d44 70%, #4a4a6a 100%)',
-    accent: '#ff4757'
+    image: 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Detective%20dark%20silhouette%20rainy%20night%20mysterious%20shadows%20noir%20movie%20poster%20Hollywood%20style&image_size=portrait_4_3'
   }
 ])
 </script>
@@ -459,6 +457,34 @@ const scripts = ref([
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
+/* AI生成的海报图片 */
+.poster-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+/* 半透明遮罩 */
+.poster-overlay-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.1) 30%,
+    rgba(0, 0, 0, 0.3) 70%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  z-index: 1;
+}
+
 .script-card:hover .script-poster {
   transform: translateY(-8px);
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
@@ -484,6 +510,7 @@ const scripts = ref([
   justify-content: flex-start;
   position: relative;
   z-index: 2;
+  margin-bottom: auto;
 }
 
 .poster-genre {
@@ -503,6 +530,8 @@ const scripts = ref([
   z-index: 2;
   text-align: center;
   padding: 20px 0;
+  margin: auto 0;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .poster-divider {
