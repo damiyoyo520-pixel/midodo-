@@ -23,6 +23,15 @@
                 <AppstoreOutlined />
                 剧本市场
               </a-menu-item>
+              <a-sub-menu key="zones">
+                <template #title>
+                  <GlobeOutlined />
+                  专区入口
+                </template>
+                <a-menu-item key="zone-global">海外专区</a-menu-item>
+                <a-menu-item key="zone-culture">文旅专区</a-menu-item>
+                <a-menu-item key="zone-heritage">非遗专区</a-menu-item>
+              </a-sub-menu>
               <a-menu-item key="community">
                 <TeamOutlined />
                 社区
@@ -30,6 +39,10 @@
               <a-menu-item key="workspace">
                 <EditOutlined />
                 创作中心
+              </a-menu-item>
+              <a-menu-item key="marketplace">
+                <StoreOutlined />
+                市场
               </a-menu-item>
             </a-menu>
 
@@ -111,7 +124,9 @@ import {
   StarOutlined,
   SettingOutlined,
   LogoutOutlined,
-  DownOutlined
+  DownOutlined,
+  GlobeOutlined,
+  StoreOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -153,11 +168,23 @@ const handleMenuClick = ({ key }: { key: string }) => {
     case 'scripts':
       router.push('/scripts')
       break
+    case 'zone-global':
+      router.push('/zone/global')
+      break
+    case 'zone-culture':
+      router.push('/zone/culture')
+      break
+    case 'zone-heritage':
+      router.push('/zone/heritage')
+      break
     case 'community':
       router.push('/community')
       break
     case 'workspace':
       router.push('/workspace')
+      break
+    case 'marketplace':
+      router.push('/marketplace')
       break
   }
 }
