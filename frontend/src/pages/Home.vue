@@ -68,19 +68,11 @@
               <span class="poster-genre">{{ script.genre }}</span>
             </div>
             
-            <!-- 中间信息 -->
-            <div class="poster-info">
-              <div class="poster-divider"></div>
-              <h3>{{ script.title }}</h3>
-              <p class="director">{{ script.director }}</p>
-              <div class="poster-divider"></div>
-            </div>
-            
-            <!-- 底部评分 -->
+            <!-- 底部信息 -->
             <div class="poster-bottom">
-              <div class="poster-rating">
-                <span>⭐</span>
-                <span>{{ script.rating }}</span>
+              <div class="poster-meta">
+                <span class="poster-rating">⭐ {{ script.rating }}</span>
+                <span class="poster-price">¥{{ script.price }}</span>
               </div>
             </div>
           </div>
@@ -480,7 +472,7 @@ const scripts = ref([
     rgba(0, 0, 0, 0.3) 0%,
     rgba(0, 0, 0, 0.1) 30%,
     rgba(0, 0, 0, 0.3) 70%,
-    rgba(0, 0, 0, 0.6) 100%
+    rgba(0, 0, 0, 0.7) 100%
   );
   z-index: 1;
 }
@@ -524,14 +516,13 @@ const scripts = ref([
   letter-spacing: 1px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
-
+/* 移动中间信息位置，让底部信息在底部 */
 .poster-info {
   position: relative;
   z-index: 2;
   text-align: center;
   padding: 20px 0;
   margin: auto 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
 .poster-divider {
@@ -562,20 +553,28 @@ const scripts = ref([
   position: relative;
   z-index: 2;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.poster-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .poster-rating {
-  background: rgba(0, 0, 0, 0.7);
   color: #fbbf24;
-  padding: 8px 16px;
   font-size: 14px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.poster-price {
+  color: #ffffff;
+  font-size: 16px;
   font-weight: 700;
-  border-radius: 2px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  backdrop-filter: blur(8px);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .script-meta {
