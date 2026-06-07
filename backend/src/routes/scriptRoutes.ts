@@ -1,135 +1,138 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { Script } from '@/models/Script';
-import { AppError } from '@/middleware/errorHandler';
-import { authenticate } from '@/middleware/auth';
-import { logger } from '@/utils/logger';
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { storage, Script } from '../models/memoryStorage';
 
-const router = Router();
+const router = express.Router();
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+// 获取剧本列表
+router.get('/', (req, res) => {
   try {
-    const { 
-      genre, 
-      search, 
-      page = 1, 
-      limit = 20, 
-      sort = '-createdAt' 
-    } = req.query;
+    const { page = 1, limit = 12, genre, search } = req.query;
+    let scripts = Array.from(storage.scripts.values()).filter(s => s.isPublished);
 
-    const filter: any = { isPublished: true };
-    
-    if (genre && genre !== 'all') {
-      filter.genre = genre;
+    // 按类型筛选
+    if (genre) {
+      scripts = scripts.filter(s => s.genre === genre);
     }
 
+    // 搜索筛选
     if (search) {
-      filter.$text = { $search: search };
+      const searchLower = (search as string).toLowerCase();
+      scripts = scripts.filter(s => 
+        s.title.toLowerCase().includes(searchLower) ||
+        s.description.toLowerCase().includes(searchLower)
+      );
     }
 
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    // 分页
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const startIndex = (pageNum - 1) * limitNum;
+    const endIndex = startIndex + limitNum;
+    const paginatedScripts = scripts.slice(startIndex, endIndex);
 
-    const [scripts, total] = await Promise.all([
-      Script.find(filter)
-        .sort(sort as string)
-        .skip(skip)
-        .limit(parseInt(limit as string))
-        .populate('author', 'username avatar'),
-      Script.countDocuments(filter),
-    ]);
-
-    res.status(200).json({
+    res.json({
       success: true,
       data: {
-        scripts,
+        scripts: paginatedScripts,
         pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          pages: Math.ceil(total / parseInt(limit as string)),
+          page: pageNum,
+          limit: limitNum,
+          total: scripts.length,
+          pages: Math.ceil(scripts.length / limitNum),
         },
       },
     });
   } catch (error) {
-    next(error);
+    console.error('获取剧本列表错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.get('/featured', async (req: Request, res: Response, next: NextFunction) => {
+// 获取精选剧本
+router.get('/featured', (req, res) => {
   try {
-    const scripts = await Script.find({ 
-      isPublished: true, 
-      isFeatured: true 
-    })
-      .sort({ createdAt: -1 })
-      .limit(12)
-      .populate('author', 'username avatar');
+    const scripts = Array.from(storage.scripts.values())
+      .filter(s => s.isPublished)
+      .sort((a, b) => b.sales - a.sales)
+      .slice(0, 8);
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: scripts,
     });
   } catch (error) {
-    next(error);
+    console.error('获取精选剧本错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+// 获取剧本详情
+router.get('/:id', (req, res) => {
   try {
-    const script = await Script.findById(req.params.id)
-      .populate('author', 'username avatar bio');
+    const script = storage.scripts.get(req.params.id);
 
     if (!script) {
-      return next(new AppError('Script not found', 404));
+      return res.status(404).json({ 
+        success: false, 
+        message: '剧本不存在' 
+      });
     }
 
-    await Script.findByIdAndUpdate(req.params.id, {
-      $inc: { views: 1 },
-    });
+    // 增加浏览量
+    script.views += 1;
+    storage.scripts.set(script._id, script);
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: script,
     });
   } catch (error) {
-    next(error);
+    console.error('获取剧本详情错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.get('/zone/:genre', async (req: Request, res: Response, next: NextFunction) => {
+// 创建剧本
+router.post('/', (req, res) => {
   try {
-    const { genre } = req.params;
-    const { page = 1, limit = 12 } = req.query;
+    const { title, description, genre, poster, price, content, author, authorName } = req.body;
 
-    const validGenres = ['海外', '文旅', '非遗'];
-    if (!validGenres.includes(genre)) {
-      return next(new AppError('Invalid zone', 400));
+    if (!title || !description || !genre || !price || !author) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '缺少必要字段' 
+      });
     }
 
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    const newScript: Script = {
+      _id: uuidv4(),
+      title,
+      description,
+      genre,
+      author,
+      authorName: authorName || '匿名作者',
+      poster: poster || 'https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=cinematic%20movie%20poster%2C%20no%20text&image_size=square_hd',
+      price,
+      content: content || '',
+      isPublished: true,
+      views: 0,
+      sales: 0,
+      rating: 5,
+      reviewCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    const [scripts, total] = await Promise.all([
-      Script.find({ genre, isPublished: true })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit as string))
-        .populate('author', 'username avatar'),
-      Script.countDocuments({ genre, isPublished: true }),
-    ]);
+    storage.scripts.set(newScript._id, newScript);
 
-    res.status(200).json({
+    res.status(201).json({
       success: true,
-      data: {
-        scripts,
-        pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          pages: Math.ceil(total / parseInt(limit as string)),
-        },
-      },
+      data: newScript,
     });
   } catch (error) {
-    next(error);
+    console.error('创建剧本错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 

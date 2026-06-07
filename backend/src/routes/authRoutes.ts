@@ -1,126 +1,123 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { z } from 'zod';
-import { User } from '@/models/User';
-import { AppError } from '@/middleware/errorHandler';
+import express from 'express';
 import jwt from 'jsonwebtoken';
-import { logger } from '@/utils/logger';
+import bcrypt from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
+import { storage, User } from '../models/memoryStorage';
 
-const router = Router();
+const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-key';
 
-const registerSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
-  username: z.string().min(3, 'Username must be at least 3 characters').max(30, 'Username must be less than 30 characters'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-const loginSchema = z.object({
-  email: z.string().email('Please enter a valid email'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-const generateToken = (id: string) => {
-  return jwt.sign(
-    { id },
-    process.env.JWT_SECRET || 'fallback-secret-change-in-production',
-    { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
-  );
-};
-
-router.post('/register', async (req: Request, res: Response, next: NextFunction) => {
+// 注册
+router.post('/register', async (req, res) => {
   try {
-    const { email, username, password } = registerSchema.parse(req.body);
+    const { username, email, password } = req.body;
 
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { username }] 
-    });
-
-    if (existingUser) {
-      return next(new AppError('Email or username already exists', 400));
+    if (!username || !email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '用户名、邮箱和密码不能为空' 
+      });
     }
 
-    const inviteCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-    const user = await User.create({
-      email,
+    // 检查用户是否已存在
+    const existingUser = Array.from(storage.users.values()).find(
+      u => u.email === email || u.username === username
+    );
+
+    if (existingUser) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '用户已存在' 
+      });
+    }
+
+    // 创建新用户
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser: User = {
+      _id: uuidv4(),
       username,
-      password,
+      email,
+      password: hashedPassword,
       role: 'user',
-      inviteCode,
-    });
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    const token = generateToken(user._id);
+    storage.users.set(newUser._id, newUser);
 
-    logger.info(`New user registered: ${username}`);
+    // 生成 JWT
+    const token = jwt.sign(
+      { userId: newUser._id, username: newUser.username },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    const { password: _, ...userWithoutPassword } = newUser;
 
     res.status(201).json({
       success: true,
       data: {
+        user: userWithoutPassword,
         token,
-        user: {
-          id: user._id,
-          email: user.email,
-          username: user.username,
-          role: user.role,
-          inviteCode: user.inviteCode,
-        },
       },
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        error: error.issues[0].message,
-      });
-    }
-    next(error);
+    console.error('注册错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
+// 登录
+router.post('/login', async (req, res) => {
   try {
-    const { email, password } = loginSchema.parse(req.body);
+    const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).select('+password');
+    if (!email || !password) {
+      return res.status(400).json({ 
+        success: false, 
+        message: '邮箱和密码不能为空' 
+      });
+    }
+
+    // 查找用户
+    const user = Array.from(storage.users.values()).find(u => u.email === email);
+
     if (!user) {
-      return next(new AppError('Invalid email or password', 401));
+      return res.status(401).json({ 
+        success: false, 
+        message: '邮箱或密码错误' 
+      });
     }
 
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      return next(new AppError('Invalid email or password', 401));
+    // 验证密码
+    const isValidPassword = await bcrypt.compare(password, user.password);
+
+    if (!isValidPassword) {
+      return res.status(401).json({ 
+        success: false, 
+        message: '邮箱或密码错误' 
+      });
     }
 
-    if (!user.isActive) {
-      return next(new AppError('Your account has been disabled', 403));
-    }
+    // 生成 JWT
+    const token = jwt.sign(
+      { userId: user._id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
 
-    user.lastLogin = new Date();
-    await user.save();
+    const { password: _, ...userWithoutPassword } = user;
 
-    const token = generateToken(user._id);
-
-    logger.info(`User logged in: ${user.username}`);
-
-    res.status(200).json({
+    res.json({
       success: true,
       data: {
+        user: userWithoutPassword,
         token,
-        user: {
-          id: user._id,
-          email: user.email,
-          username: user.username,
-          role: user.role,
-          avatar: user.avatar,
-        },
       },
     });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return res.status(400).json({
-        success: false,
-        error: error.issues[0].message,
-      });
-    }
-    next(error);
+    console.error('登录错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 

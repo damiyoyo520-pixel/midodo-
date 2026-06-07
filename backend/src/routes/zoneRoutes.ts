@@ -1,98 +1,101 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { Script } from '@/models/Script';
+import express from 'express';
+import { storage } from '../models/memoryStorage';
 
-const router = Router();
+const router = express.Router();
 
-router.get('/global', async (req: Request, res: Response, next: NextFunction) => {
+// 海外专区
+router.get('/global', (req, res) => {
   try {
     const { page = 1, limit = 12 } = req.query;
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    
+    const scripts = Array.from(storage.scripts.values()).filter(
+      s => s.genre === '海外' && s.isPublished
+    );
 
-    const [scripts, total] = await Promise.all([
-      Script.find({ genre: '海外', isPublished: true })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit as string))
-        .populate('author', 'username avatar'),
-      Script.countDocuments({ genre: '海外', isPublished: true }),
-    ]);
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedScripts = scripts.slice(startIndex, startIndex + limitNum);
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: {
-        scripts,
+        scripts: paginatedScripts,
         pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          pages: Math.ceil(total / parseInt(limit as string)),
+          page: pageNum,
+          limit: limitNum,
+          total: scripts.length,
+          pages: Math.ceil(scripts.length / limitNum),
         },
       },
     });
   } catch (error) {
-    next(error);
+    console.error('获取海外专区剧本错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.get('/culture', async (req: Request, res: Response, next: NextFunction) => {
+// 文旅专区
+router.get('/culture', (req, res) => {
   try {
     const { page = 1, limit = 12 } = req.query;
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    
+    const scripts = Array.from(storage.scripts.values()).filter(
+      s => s.genre === '文旅' && s.isPublished
+    );
 
-    const [scripts, total] = await Promise.all([
-      Script.find({ genre: '文旅', isPublished: true })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit as string))
-        .populate('author', 'username avatar'),
-      Script.countDocuments({ genre: '文旅', isPublished: true }),
-    ]);
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedScripts = scripts.slice(startIndex, startIndex + limitNum);
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: {
-        scripts,
+        scripts: paginatedScripts,
         pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          pages: Math.ceil(total / parseInt(limit as string)),
+          page: pageNum,
+          limit: limitNum,
+          total: scripts.length,
+          pages: Math.ceil(scripts.length / limitNum),
         },
       },
     });
   } catch (error) {
-    next(error);
+    console.error('获取文旅专区剧本错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.get('/heritage', async (req: Request, res: Response, next: NextFunction) => {
+// 非遗专区
+router.get('/heritage', (req, res) => {
   try {
     const { page = 1, limit = 12 } = req.query;
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
+    
+    const scripts = Array.from(storage.scripts.values()).filter(
+      s => s.genre === '非遗' && s.isPublished
+    );
 
-    const [scripts, total] = await Promise.all([
-      Script.find({ genre: '非遗', isPublished: true })
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit as string))
-        .populate('author', 'username avatar'),
-      Script.countDocuments({ genre: '非遗', isPublished: true }),
-    ]);
+    const pageNum = parseInt(page as string);
+    const limitNum = parseInt(limit as string);
+    const startIndex = (pageNum - 1) * limitNum;
+    const paginatedScripts = scripts.slice(startIndex, startIndex + limitNum);
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: {
-        scripts,
+        scripts: paginatedScripts,
         pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          pages: Math.ceil(total / parseInt(limit as string)),
+          page: pageNum,
+          limit: limitNum,
+          total: scripts.length,
+          pages: Math.ceil(scripts.length / limitNum),
         },
       },
     });
   } catch (error) {
-    next(error);
+    console.error('获取非遗专区剧本错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 

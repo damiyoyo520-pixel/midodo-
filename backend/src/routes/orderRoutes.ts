@@ -1,158 +1,106 @@
-import { Router, Request, Response, NextFunction } from 'express';
-import { Order } from '@/models/Order';
-import { Script } from '@/models/Script';
-import { AppError } from '@/middleware/errorHandler';
-import { authenticate } from '@/middleware/auth';
-import { logger } from '@/utils/logger';
+import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+import { storage, Order } from '../models/memoryStorage';
 
-const router = Router();
+const router = express.Router();
 
-router.use(authenticate);
-
-router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+// 创建订单
+router.post('/', (req, res) => {
   try {
-    const { scriptId } = req.body;
+    const { userId, scriptId, paymentMethod } = req.body;
 
-    if (!scriptId) {
-      return next(new AppError('Script ID is required', 400));
-    }
-
-    const script = await Script.findById(scriptId);
+    const script = storage.scripts.get(scriptId);
     if (!script) {
-      return next(new AppError('Script not found', 404));
+      return res.status(404).json({ success: false, message: '剧本不存在' });
     }
 
-    const existingOrder = await Order.findOne({
-      user: req.user._id,
-      script: scriptId,
-      status: { $in: ['paid', 'pending'] },
-    });
-
-    if (existingOrder) {
-      if (existingOrder.status === 'paid') {
-        return next(new AppError('You have already purchased this script', 400));
-      }
-      return res.status(200).json({
-        success: true,
-        data: existingOrder,
-      });
-    }
-
-    const serviceFee = Math.round(script.price * 0.1);
-    const totalAmount = script.price + serviceFee;
-
-    const order = await Order.create({
-      user: req.user._id,
-      script: scriptId,
+    const newOrder: Order = {
+      _id: uuidv4(),
+      userId,
+      scriptId,
+      scriptTitle: script.title,
+      scriptPoster: script.poster,
       amount: script.price,
-      serviceFee,
-      totalAmount,
       status: 'pending',
-    });
+      paymentMethod,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
 
-    logger.info(`New order created: ${order.orderNumber} by ${req.user.username}`);
+    storage.orders.set(newOrder._id, newOrder);
 
     res.status(201).json({
       success: true,
-      data: order,
+      data: newOrder,
     });
   } catch (error) {
-    next(error);
+    console.error('创建订单错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+// 支付订单
+router.post('/:id/pay', (req, res) => {
   try {
-    const { page = 1, limit = 20, status } = req.query;
-    
-    const filter: any = { user: req.user._id };
-    if (status) {
-      filter.status = status;
-    }
-
-    const skip = (parseInt(page as string) - 1) * parseInt(limit as string);
-
-    const [orders, total] = await Promise.all([
-      Order.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit as string))
-        .populate('script', 'title image price'),
-      Order.countDocuments(filter),
-    ]);
-
-    res.status(200).json({
-      success: true,
-      data: {
-        orders,
-        pagination: {
-          page: parseInt(page as string),
-          limit: parseInt(limit as string),
-          total,
-          pages: Math.ceil(total / parseInt(limit as string)),
-        },
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const order = await Order.findOne({
-      _id: req.params.id,
-      user: req.user._id,
-    }).populate('script');
-
+    const order = storage.orders.get(req.params.id);
     if (!order) {
-      return next(new AppError('Order not found', 404));
+      return res.status(404).json({ success: false, message: '订单不存在' });
     }
 
-    res.status(200).json({
-      success: true,
-      data: order,
-    });
-  } catch (error) {
-    next(error);
-  }
-});
-
-router.put('/:id/pay', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { paymentMethod } = req.body;
-    
-    const order = await Order.findOne({
-      _id: req.params.id,
-      user: req.user._id,
-    });
-
-    if (!order) {
-      return next(new AppError('Order not found', 404));
-    }
-
-    if (order.status !== 'pending') {
-      return next(new AppError('Order is not pending', 400));
-    }
-
+    // 更新订单状态
     order.status = 'paid';
-    order.paymentMethod = paymentMethod || 'wechat';
-    order.paidAt = new Date();
-    order.paymentTime = new Date();
-    await order.save();
+    order.updatedAt = new Date();
+    storage.orders.set(order._id, order);
 
-    await Script.findByIdAndUpdate(order.script, {
-      $inc: { sales: 1 },
-    });
+    // 更新剧本销量
+    const script = storage.scripts.get(order.scriptId);
+    if (script) {
+      script.sales += 1;
+      storage.scripts.set(script._id, script);
+    }
 
-    logger.info(`Order paid: ${order.orderNumber} by ${req.user.username}`);
-
-    res.status(200).json({
+    res.json({
       success: true,
       data: order,
     });
   } catch (error) {
-    next(error);
+    console.error('支付订单错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+
+// 获取用户订单
+router.get('/user/:userId', (req, res) => {
+  try {
+    const orders = Array.from(storage.orders.values()).filter(
+      o => o.userId === req.params.userId
+    );
+
+    res.json({
+      success: true,
+      data: orders,
+    });
+  } catch (error) {
+    console.error('获取订单错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
+  }
+});
+
+// 获取订单详情
+router.get('/:id', (req, res) => {
+  try {
+    const order = storage.orders.get(req.params.id);
+    if (!order) {
+      return res.status(404).json({ success: false, message: '订单不存在' });
+    }
+
+    res.json({
+      success: true,
+      data: order,
+    });
+  } catch (error) {
+    console.error('获取订单详情错误:', error);
+    res.status(500).json({ success: false, message: '服务器错误' });
   }
 });
 
