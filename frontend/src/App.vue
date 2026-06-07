@@ -34,15 +34,11 @@
               </a-sub-menu>
               <a-menu-item key="community">
                 <TeamOutlined />
-                社区
+                社区交流
               </a-menu-item>
               <a-menu-item key="workspace">
                 <EditOutlined />
                 创作中心
-              </a-menu-item>
-              <a-menu-item key="marketplace">
-                <ShopOutlined />
-                市场
               </a-menu-item>
             </a-menu>
 
@@ -125,8 +121,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   DownOutlined,
-  CompassOutlined,
-  ShopOutlined
+  CompassOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 
@@ -182,9 +177,6 @@ const handleMenuClick = ({ key }: { key: string }) => {
       break
     case 'workspace':
       router.push('/workspace')
-      break
-    case 'marketplace':
-      router.push('/marketplace')
       break
   }
 }
