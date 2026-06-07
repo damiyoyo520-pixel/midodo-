@@ -1,5 +1,32 @@
 <template>
   <div class="home-page">
+    <!-- 顶部导航 -->
+    <nav class="top-nav">
+      <div class="nav-container">
+        <div class="nav-left">
+          <router-link to="/" class="brand">
+            <span class="brand-icon">🎬</span>
+            <span class="brand-text">短剧创作交易平台</span>
+          </router-link>
+        </div>
+        
+        <div class="nav-center">
+          <router-link to="/home" class="nav-link">首页</router-link>
+          <router-link to="/scripts" class="nav-link">剧本市场</router-link>
+          <router-link to="/zone/global" class="nav-link">海外专区</router-link>
+          <router-link to="/zone/culture" class="nav-link">文旅专区</router-link>
+          <router-link to="/zone/heritage" class="nav-link">非遗专区</router-link>
+          <router-link to="/workspace" class="nav-link">创作中心</router-link>
+          <router-link to="/community" class="nav-link">社区</router-link>
+        </div>
+        
+        <div class="nav-right">
+          <router-link to="/login" class="nav-btn-outline">登录</router-link>
+          <router-link to="/register" class="nav-btn-primary">注册</router-link>
+        </div>
+      </div>
+    </nav>
+
     <!-- 主视觉区 -->
     <section class="hero-section">
       <div class="hero-content">
