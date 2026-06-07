@@ -11,8 +11,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/Home.vue'),
     meta: { title: '首页' }
   },
-  
-  // 三大专区
   {
     path: '/zone/global',
     component: () => import('../pages/zone/GlobalZone.vue'),
@@ -28,8 +26,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/zone/HeritageZone.vue'),
     meta: { title: '非遗专区' }
   },
-  
-  // 剧本交易闭环
+  {
+    path: '/scripts',
+    component: () => import('../pages/Scripts.vue'),
+    meta: { title: '剧本市场' }
+  },
   {
     path: '/scripts/:id',
     component: () => import('../pages/ScriptDetail.vue'),
@@ -65,8 +66,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/Orders.vue'),
     meta: { title: '我的订单' }
   },
-  
-  // 创作中心
   {
     path: '/workspace',
     component: () => import('../pages/workspace/Workspace.vue'),
@@ -97,8 +96,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/Templates.vue'),
     meta: { title: '创作模板' }
   },
-  
-  // 用户中心
   {
     path: '/dashboard',
     component: () => import('../pages/Dashboard.vue'),
@@ -124,8 +121,6 @@ const routes: RouteRecordRaw[] = [
     component: () => import('../pages/user/Profile.vue'),
     meta: { title: '用户主页' }
   },
-  
-  // 社区与市场
   {
     path: '/community',
     component: () => import('../pages/community/Community.vue'),
@@ -144,10 +139,8 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/search',
     component: () => import('../pages/Search.vue'),
-    meta: { title: '搜索结果' }
+    meta: { title: '搜索' }
   },
-  
-  // 原有页面
   {
     path: '/login',
     component: () => import('../pages/Login.vue'),
@@ -157,25 +150,12 @@ const routes: RouteRecordRaw[] = [
     path: '/register',
     component: () => import('../pages/Register.vue'),
     meta: { title: '注册' }
-  },
-  {
-    path: '/create',
-    component: () => import('../pages/CreateScript.vue'),
-    meta: { title: '创建剧本' }
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
-})
-
-router.beforeEach((to, from, next) => {
-  const title = to.meta.title as string
-  if (title) {
-    document.title = `${title} - 短剧交易平台`
-  }
-  next()
 })
 
 export default router
