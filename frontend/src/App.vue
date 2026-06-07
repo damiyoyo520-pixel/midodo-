@@ -219,8 +219,7 @@ body {
 }
 
 .app-header {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
+  background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
