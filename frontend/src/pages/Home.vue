@@ -541,7 +541,7 @@ const scripts = ref([
 
 /* 数据统计 */
 .stats-bar {
-  background: #111827;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
   padding: 40px 24px;
 }
 
@@ -563,19 +563,19 @@ const scripts = ref([
 .stat-value {
   font-size: 32px;
   font-weight: 700;
-  color: #dc2626;
+  color: #ffffff;
   margin-bottom: 4px;
 }
 
 .stat-label {
   font-size: 14px;
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .stat-divider {
   width: 1px;
   height: 40px;
-  background: #374151;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* 底部 */
