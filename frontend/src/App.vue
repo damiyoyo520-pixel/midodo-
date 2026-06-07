@@ -25,7 +25,7 @@
               </a-menu-item>
               <a-sub-menu key="zones">
                 <template #title>
-                  <GlobeOutlined />
+                  <CompassOutlined />
                   专区入口
                 </template>
                 <a-menu-item key="zone-global">海外专区</a-menu-item>
@@ -41,7 +41,7 @@
                 创作中心
               </a-menu-item>
               <a-menu-item key="marketplace">
-                <StoreOutlined />
+                <ShopOutlined />
                 市场
               </a-menu-item>
             </a-menu>
@@ -125,8 +125,8 @@ import {
   SettingOutlined,
   LogoutOutlined,
   DownOutlined,
-  GlobeOutlined,
-  StoreOutlined
+  CompassOutlined,
+  ShopOutlined
 } from '@ant-design/icons-vue'
 import { useAuthStore } from '@/stores/auth'
 
