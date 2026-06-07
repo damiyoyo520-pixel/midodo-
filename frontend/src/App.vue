@@ -16,28 +16,20 @@
               @click="handleMenuClick"
             >
               <a-menu-item key="home">
-                <span>
-                  <HomeOutlined />
-                  首页
-                </span>
+                <HomeOutlined />
+                首页
               </a-menu-item>
               <a-menu-item key="scripts">
-                <span>
-                  <AppstoreOutlined />
-                  剧本市场
-                </span>
+                <AppstoreOutlined />
+                剧本市场
               </a-menu-item>
               <a-menu-item key="community">
-                <span>
-                  <TeamOutlined />
-                  社区
-                </span>
+                <TeamOutlined />
+                社区
               </a-menu-item>
               <a-menu-item key="workspace">
-                <span>
-                  <EditOutlined />
-                  创作中心
-                </span>
+                <EditOutlined />
+                创作中心
               </a-menu-item>
             </a-menu>
 
@@ -196,12 +188,6 @@ const handleUserMenuClick = ({ key }: { key: string }) => {
 <style>
 @import './styles/globals.css';
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -219,7 +205,7 @@ body {
 }
 
 .app-header {
-  background: #fff;
+  background: #ffffff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
@@ -292,7 +278,7 @@ body {
 }
 
 .app-footer {
-  background: #fff;
+  background: #ffffff;
   text-align: center;
   padding: 32px 24px;
   border-top: 1px solid var(--border-light);
