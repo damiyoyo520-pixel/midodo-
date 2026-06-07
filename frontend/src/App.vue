@@ -6,56 +6,73 @@
           <div class="header-container">
             <router-link to="/" class="logo">
               <span class="logo-icon">🎬</span>
-              <span class="logo-text">短剧交易平台</span>
+              <span class="logo-text">短剧创作平台</span>
             </router-link>
 
             <a-menu
               v-model:selectedKeys="currentMenu"
               mode="horizontal"
               class="nav-menu"
+              @click="handleMenuClick"
             >
               <a-menu-item key="home">
-                <router-link to="/home">
-                  <HomeOutlined /> 首页
-                </router-link>
+                <span>
+                  <HomeOutlined />
+                  首页
+                </span>
               </a-menu-item>
               <a-menu-item key="scripts">
-                <router-link to="/scripts">
-                  <AppstoreOutlined /> 剧本市场
-                </router-link>
+                <span>
+                  <AppstoreOutlined />
+                  剧本市场
+                </span>
               </a-menu-item>
-              <a-menu-item key="create" v-if="isAuthenticated">
-                <router-link to="/create">
-                  <PlusCircleOutlined /> 创建剧本
-                </router-link>
+              <a-menu-item key="community">
+                <span>
+                  <TeamOutlined />
+                  社区
+                </span>
+              </a-menu-item>
+              <a-menu-item key="workspace">
+                <span>
+                  <EditOutlined />
+                  创作中心
+                </span>
               </a-menu-item>
             </a-menu>
 
             <div class="header-actions">
               <template v-if="isAuthenticated">
                 <a-dropdown>
-                  <a-button type="text">
-                    <a-avatar :size="32" style="background-color: #1890ff; margin-right: 8px;">
-                      {{ user?.username?.charAt(0).toUpperCase() || 'U' }}
+                  <a-button type="text" class="user-button">
+                    <a-avatar :size="32" style="background-color: var(--primary-red); margin-right: 8px;">
+                      {{ user?.username?.charAt(0)?.toUpperCase() || 'U' }}
                     </a-avatar>
                     {{ user?.username || '用户' }}
                     <DownOutlined />
                   </a-button>
                   <template #overlay>
-                    <a-menu>
+                    <a-menu @click="handleUserMenuClick">
                       <a-menu-item key="dashboard">
-                        <router-link to="/dashboard">
-                          <DashboardOutlined /> 创作者仪表板
-                        </router-link>
+                        <DashboardOutlined />
+                        仪表盘
                       </a-menu-item>
                       <a-menu-item key="orders">
-                        <router-link to="/orders">
-                          <ShoppingCartOutlined /> 我的订单
-                        </router-link>
+                        <ShoppingCartOutlined />
+                        我的订单
+                      </a-menu-item>
+                      <a-menu-item key="favorites">
+                        <StarOutlined />
+                        收藏
                       </a-menu-item>
                       <a-menu-divider />
-                      <a-menu-item key="logout" @click="handleLogout">
-                        <LogoutOutlined /> 退出登录
+                      <a-menu-item key="settings">
+                        <SettingOutlined />
+                        设置
+                      </a-menu-item>
+                      <a-menu-item key="logout">
+                        <LogoutOutlined />
+                        退出登录
                       </a-menu-item>
                     </a-menu>
                   </template>
@@ -79,7 +96,7 @@
 
         <a-layout-footer class="app-footer">
           <div class="footer-content">
-            <p>© 2024 短剧交易平台 - 让创意更有价值</p>
+            <p>© 2024 短剧创作平台 - 让创意更有价值</p>
           </div>
         </a-layout-footer>
       </a-layout>
@@ -88,58 +105,92 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-import { message } from 'ant-design-vue';
-import zhCN from 'ant-design-vue/es/locale/zh_CN';
+import { ref, computed, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import { message } from 'ant-design-vue'
+import zhCN from 'ant-design-vue/es/locale/zh_CN'
 import {
   HomeOutlined,
   AppstoreOutlined,
-  PlusCircleOutlined,
+  TeamOutlined,
+  EditOutlined,
   DashboardOutlined,
   ShoppingCartOutlined,
+  StarOutlined,
+  SettingOutlined,
   LogoutOutlined,
-  DownOutlined,
-} from '@ant-design/icons-vue';
-import { useAuthStore } from '@/stores/auth';
+  DownOutlined
+} from '@ant-design/icons-vue'
+import { useAuthStore } from '@/stores/auth'
 
-const router = useRouter();
-const route = useRoute();
-const authStore = useAuthStore();
+const router = useRouter()
+const route = useRoute()
+const authStore = useAuthStore()
 
-const isAuthenticated = computed(() => authStore.isAuthenticated);
-const user = computed(() => authStore.user);
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+const user = computed(() => authStore.user)
 
-const currentMenu = ref<string[]>(['home']);
+const currentMenu = ref<string[]>(['home'])
 
 const updateCurrentMenu = () => {
-  const path = route.path;
-  if (path === '/' || path === '/home') {
-    currentMenu.value = ['home'];
+  const path = route.path
+  if (path === '/' || path.startsWith('/home')) {
+    currentMenu.value = ['home']
   } else if (path.startsWith('/scripts')) {
-    currentMenu.value = ['scripts'];
-  } else if (path === '/create') {
-    currentMenu.value = ['create'];
-  } else if (path === '/dashboard') {
-    currentMenu.value = ['dashboard'];
-  } else if (path === '/orders') {
-    currentMenu.value = ['orders'];
+    currentMenu.value = ['scripts']
+  } else if (path.startsWith('/community')) {
+    currentMenu.value = ['community']
+  } else if (path.startsWith('/workspace')) {
+    currentMenu.value = ['workspace']
   }
-};
+}
 
 watch(
   () => route.path,
   () => {
-    updateCurrentMenu();
+    updateCurrentMenu()
   },
   { immediate: true }
-);
+)
 
-const handleLogout = () => {
-  authStore.logout();
-  message.success('已退出登录');
-  router.push('/home');
-};
+const handleMenuClick = ({ key }: { key: string }) => {
+  switch (key) {
+    case 'home':
+      router.push('/home')
+      break
+    case 'scripts':
+      router.push('/scripts')
+      break
+    case 'community':
+      router.push('/community')
+      break
+    case 'workspace':
+      router.push('/workspace')
+      break
+  }
+}
+
+const handleUserMenuClick = ({ key }: { key: string }) => {
+  switch (key) {
+    case 'dashboard':
+      router.push('/dashboard')
+      break
+    case 'orders':
+      router.push('/orders')
+      break
+    case 'favorites':
+      router.push('/favorites')
+      break
+    case 'settings':
+      router.push('/settings')
+      break
+    case 'logout':
+      authStore.logout()
+      message.success('已退出登录')
+      router.push('/home')
+      break
+  }
+}
 </script>
 
 <style>
@@ -152,8 +203,7 @@ const handleLogout = () => {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -169,8 +219,8 @@ body {
 }
 
 .app-header {
-  background: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -194,8 +244,8 @@ body {
   align-items: center;
   gap: 12px;
   text-decoration: none;
-  color: #333;
-  font-weight: 600;
+  color: var(--text-primary);
+  font-weight: 700;
   font-size: 18px;
 }
 
@@ -210,7 +260,15 @@ body {
 .nav-menu {
   flex: 1;
   border-bottom: none;
-  line-height: 62px;
+  line-height: 64px;
+}
+
+.nav-menu :deep(.ant-menu-item-selected) {
+  color: var(--primary-red) !important;
+}
+
+.nav-menu :deep(.ant-menu-item-selected::after) {
+  border-bottom-color: var(--primary-red) !important;
 }
 
 .header-actions {
@@ -219,25 +277,37 @@ body {
   gap: 8px;
 }
 
+.user-button {
+  display: flex;
+  align-items: center;
+}
+
 .header-actions a {
   text-decoration: none;
 }
 
 .app-content {
   flex: 1;
-  background: #f5f5f5;
+  background: var(--bg-gray);
 }
 
 .app-footer {
-  background: white;
+  background: #fff;
   text-align: center;
-  padding: 24px;
-  border-top: 1px solid #f0f0f0;
+  padding: 32px 24px;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-tertiary);
 }
 
 .footer-content p {
-  color: #999;
+  color: var(--text-tertiary);
   margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .nav-menu {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
@@ -247,10 +317,6 @@ body {
   }
 
   .logo-text {
-    display: none;
-  }
-
-  .nav-menu {
     display: none;
   }
 

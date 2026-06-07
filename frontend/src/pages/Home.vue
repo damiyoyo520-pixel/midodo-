@@ -113,35 +113,131 @@ import { ref } from 'vue'
 const featuredScripts = ref([
   {
     id: '1',
-    title: '都市爱情故事',
+    title: '绣娘传',
+    theme: '非遗',
+    price: 399,
+    views: 1856,
+    color: 'linear-gradient(135deg, #9b5de5 0%, #f15bb5 100%)'
+  },
+  {
+    id: '2',
+    title: '京剧大师',
+    theme: '非遗',
+    price: 499,
+    views: 2141,
+    color: 'linear-gradient(135deg, #d62828 0%, #f77f00 100%)'
+  },
+  {
+    id: '3',
+    title: '景德镇瓷',
+    theme: '非遗',
+    price: 449,
+    views: 1676,
+    color: 'linear-gradient(135deg, #023e8a 0%, #0077b6 100%)'
+  },
+  {
+    id: '4',
+    title: '少林功夫',
+    theme: '非遗',
+    price: 599,
+    views: 3241,
+    color: 'linear-gradient(135deg, #e07b39 0%, #fb8500 100%)'
+  },
+  {
+    id: '5',
+    title: '唐人街往事',
+    theme: '海外',
+    price: 349,
+    views: 2356,
+    color: 'linear-gradient(135deg, #1d3557 0%, #457b9d 100%)'
+  },
+  {
+    id: '6',
+    title: '东京物语',
+    theme: '海外',
+    price: 329,
+    views: 1923,
+    color: 'linear-gradient(135deg, #000814 0%, #001d3d 100%)'
+  },
+  {
+    id: '7',
+    title: '巴黎之恋',
+    theme: '海外',
+    price: 379,
+    views: 2456,
+    color: 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
+  },
+  {
+    id: '8',
+    title: '新加坡梦',
+    theme: '海外',
+    price: 299,
+    views: 1789,
+    color: 'linear-gradient(135deg, #14213d 0%, #0f3460 100%)'
+  },
+  {
+    id: '9',
+    title: '西湖·千年情',
+    theme: '文旅',
+    price: 369,
+    views: 2621,
+    color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+  },
+  {
+    id: '10',
+    title: '长安十二时辰',
+    theme: '文旅',
+    price: 499,
+    views: 3145,
+    color: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
+  },
+  {
+    id: '11',
+    title: '丽江古城',
+    theme: '文旅',
+    price: 349,
+    views: 1987,
+    color: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
+  },
+  {
+    id: '12',
+    title: '敦煌飞天',
+    theme: '文旅',
+    price: 459,
+    views: 2876,
+    color: 'linear-gradient(135deg, #d4a574 0%, #8b6f47 100%)'
+  },
+  {
+    id: '13',
+    title: '野孩子',
     theme: '现代都市',
     price: 299,
     views: 1256,
     color: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
   },
   {
-    id: '2',
-    title: '古装穿越传奇',
-    theme: '古装奇幻',
+    id: '14',
+    title: '暗夜追踪',
+    theme: '悬疑犯罪',
     price: 399,
     views: 2341,
-    color: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'
+    color: 'linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%)'
   },
   {
-    id: '3',
-    title: '悬疑推理剧',
-    theme: '悬疑犯罪',
-    price: 349,
+    id: '15',
+    title: '星河彼岸',
+    theme: '科幻',
+    price: 449,
     views: 1876,
-    color: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+    color: 'linear-gradient(135deg, #0f0c29 0%, #302b63 100%)'
   },
   {
-    id: '4',
-    title: '青春校园',
-    theme: '青春励志',
+    id: '16',
+    title: '乡村教师',
+    theme: '温暖',
     price: 199,
     views: 3421,
-    color: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+    color: 'linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)'
   }
 ])
 </script>
@@ -267,14 +363,19 @@ const featuredScripts = ref([
 }
 
 .script-image {
-  height: 160px;
+  aspect-ratio: 9/16;
+  max-height: 400px;
   overflow: hidden;
+  position: relative;
 }
 
 .placeholder-image {
   width: 100%;
   height: 100%;
-  transition: transform 0.3s ease;
+  transition: transform 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .script-card:hover .placeholder-image {
