@@ -54,15 +54,28 @@
           class="script-card"
         >
           <div class="script-poster" :style="{ background: script.gradient }">
+            <!-- 光效装饰 -->
+            <div class="poster-light-effect"></div>
+            
+            <!-- 顶部信息 -->
             <div class="poster-overlay">
               <span class="poster-genre">{{ script.genre }}</span>
             </div>
+            
+            <!-- 中间信息 -->
             <div class="poster-info">
+              <div class="poster-divider"></div>
               <h3>{{ script.title }}</h3>
-              <p>{{ script.director }}</p>
+              <p class="director">{{ script.director }}</p>
+              <div class="poster-divider"></div>
             </div>
-            <div class="poster-rating">
-              <span>⭐ {{ script.rating }}</span>
+            
+            <!-- 底部评分 -->
+            <div class="poster-bottom">
+              <div class="poster-rating">
+                <span>⭐</span>
+                <span>{{ script.rating }}</span>
+              </div>
             </div>
           </div>
           <div class="script-meta">
@@ -152,7 +165,8 @@ const scripts = ref([
     price: 399,
     rating: 4.9,
     sales: 186,
-    gradient: 'linear-gradient(180deg, #1a0a2e 0%, #4a1942 50%, #d4a574 100%)'
+    gradient: 'linear-gradient(180deg, #2d1b4e 0%, #6b2d7b 30%, #c4a5d4 70%, #e8c8e0 100%)',
+    accent: '#f5e6ff'
   },
   {
     id: '2',
@@ -162,7 +176,8 @@ const scripts = ref([
     price: 499,
     rating: 4.8,
     sales: 142,
-    gradient: 'linear-gradient(180deg, #2d1b3d 0%, #8b2942 50%, #d4a574 100%)'
+    gradient: 'linear-gradient(180deg, #1a0a0a 0%, #8b1a1a 30%, #d4a520 60%, #ff6b35 100%)',
+    accent: '#ffd700'
   },
   {
     id: '3',
@@ -172,7 +187,8 @@ const scripts = ref([
     price: 349,
     rating: 4.7,
     sales: 234,
-    gradient: 'linear-gradient(180deg, #0a1628 0%, #1d3557 50%, #f4a261 100%)'
+    gradient: 'linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 40%, #ff6b6b 80%, #ffd93d 100%)',
+    accent: '#ffd93d'
   },
   {
     id: '4',
@@ -182,7 +198,8 @@ const scripts = ref([
     price: 329,
     rating: 4.6,
     sales: 198,
-    gradient: 'linear-gradient(180deg, #0d0d0d 0%, #1a1a2e 50%, #e94560 100%)'
+    gradient: 'linear-gradient(180deg, #000011 0%, #001133 30%, #004488 60%, #00aaff 100%)',
+    accent: '#00aaff'
   },
   {
     id: '5',
@@ -192,7 +209,8 @@ const scripts = ref([
     price: 369,
     rating: 4.9,
     sales: 267,
-    gradient: 'linear-gradient(180deg, #1a4a3a 0%, #2d6a4f 50%, #95d5b2 100%)'
+    gradient: 'linear-gradient(180deg, #1a3a2a 0%, #2d6a4f 30%, #52b788 60%, #95d5b2 100%)',
+    accent: '#95d5b2'
   },
   {
     id: '6',
@@ -202,7 +220,8 @@ const scripts = ref([
     price: 459,
     rating: 4.9,
     sales: 189,
-    gradient: 'linear-gradient(180deg, #3d2914 0%, #8b5a2b 50%, #dda15e 100%)'
+    gradient: 'linear-gradient(180deg, #3d2914 0%, #8b5a2b 30%, #dda15e 50%, #f4e4bc 100%)',
+    accent: '#dda15e'
   },
   {
     id: '7',
@@ -212,7 +231,8 @@ const scripts = ref([
     price: 449,
     rating: 4.8,
     sales: 156,
-    gradient: 'linear-gradient(180deg, #0f0c29 0%, #302b63 50%, #764ba2 100%)'
+    gradient: 'linear-gradient(180deg, #0f0c29 0%, #302b63 30%, #4a3299 50%, #764ba2 100%)',
+    accent: '#764ba2'
   },
   {
     id: '8',
@@ -222,7 +242,8 @@ const scripts = ref([
     price: 399,
     rating: 4.7,
     sales: 212,
-    gradient: 'linear-gradient(180deg, #000000 0%, #1a1a1a 50%, #4a4a4a 100%)'
+    gradient: 'linear-gradient(180deg, #000000 0%, #1a1a2e 40%, #2d2d44 70%, #4a4a6a 100%)',
+    accent: '#ff4757'
   }
 ])
 </script>
@@ -435,70 +456,116 @@ const scripts = ref([
   justify-content: space-between;
   padding: 16px;
   transition: transform 0.3s;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
 }
 
 .script-card:hover .script-poster {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+/* 光效 */
+.poster-light-effect {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.script-card:hover .poster-light-effect {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 50%);
 }
 
 .poster-overlay {
   display: flex;
   justify-content: flex-start;
+  position: relative;
+  z-index: 2;
 }
 
 .poster-genre {
   background: rgba(255, 255, 255, 0.95);
   color: #111827;
-  padding: 4px 12px;
+  padding: 6px 14px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   border-radius: 1px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .poster-info {
-  color: #ffffff;
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.poster-divider {
+  width: 40px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  margin: 12px auto;
 }
 
 .poster-info h3 {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 4px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 8px;
+  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+  line-height: 1.3;
 }
 
-.poster-info p {
+.director {
   font-size: 13px;
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  letter-spacing: 1px;
+}
+
+.poster-bottom {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
 }
 
 .poster-rating {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.7);
   color: #fbbf24;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 1px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(8px);
 }
 
 .script-meta {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 16px 0;
 }
 
 .script-price {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 800;
   color: #dc2626;
 }
 
 .script-sales {
   font-size: 13px;
   color: #9ca3af;
+  font-weight: 500;
 }
 
 /* 专区 */
