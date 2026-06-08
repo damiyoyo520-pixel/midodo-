@@ -32,7 +32,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { message } from 'ant-design-vue'
-import { getScripts } from '../services/scriptService'
+import { scriptService } from '../services/scriptService'
+import apiClient from '../services/api'
 
 interface Script {
   _id: string
@@ -49,9 +50,9 @@ const loading = ref(false)
 const loadScripts = async () => {
   try {
     loading.value = true
-    const response = await getScripts()
-    if (response.success) {
-      scripts.value = response.data.scripts
+    const response = await apiClient.get('/api/scripts')
+    if (response.data.success) {
+      scripts.value = response.data.data.scripts
     }
   } catch (error) {
     message.error('加载剧本失败')
