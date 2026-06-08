@@ -30,6 +30,26 @@ app.use(morgan(NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// 欢迎页面
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: '短剧创作交易平台 API 服务',
+    version: '1.0.0',
+    docs: '访问 /api 前缀的端点获取数据',
+    health: '/health',
+    endpoints: {
+      auth: '/api/auth',
+      scripts: '/api/scripts',
+      orders: '/api/orders',
+      users: '/api/users',
+      zones: '/api/zones',
+      community: '/api/community'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // 健康检查
 app.get('/health', (req, res) => {
   res.status(200).json({
