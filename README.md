@@ -1,295 +1,215 @@
-# 🎬 短剧交易平台
+# 🎬 短剧创作交易平台
 
-一个基于 AI 驱动的短剧创作、交易、分发平台。集成了剧本生成、文本转视频、数字资产交易等核心功能。
+一个功能完整的短剧剧本创作与交易平台，支持用户浏览、购买剧本，创作者发布作品。
 
-## 🎯 核心功能
+## ✨ 功能特性
 
-- ✅ **AI 剧本生成**：基于 ChatGLM 的智能创作辅助
-- ✅ **短剧交易系统**：完整的买卖、支付、提现流程
-- ✅ **文本转视频**：集成 ModelScope 自动生成短视频
-- ✅ **创作者生态**：版权保护、收益分配、创作者认证
-- ✅ **数字资产**：NFT、数字版权管理（可选）
-- ✅ **内容库**：剧本模板、素材库、分类管理
+### 🏠 首页
+- 苹果风格的现代化界面
+- 精选剧本展示（好莱坞风格海报）
+- 三大专区快速入口
+- 平台数据统计
+- 响应式设计，支持多种设备
 
-## 📊 技术栈
+### 📖 剧本市场
+- 剧本列表浏览
+- 分类筛选（海外、文旅、非遗）
+- 搜索功能
+- 剧本详情页
+- 用户评论
 
-### 后端
-- **框架**：Medusa.js (Node.js + TypeScript)
-- **数据库**：PostgreSQL
-- **缓存**：Redis
-- **消息队列**：Bull (Redis-based)
-- **支付**：支付宝、微信支付
-- **存储**：Minio / AWS S3
+### 🚀 三大专区
+- **海外专区** - 国际化题材剧本
+- **文旅专区** - 旅游文化主题剧本
+- **非遗专区** - 非物质文化遗产主题
+
+### 💱 完整交易流程
+- 订单确认
+- 多种支付方式
+- 订单成功通知
+- 订单详情查看
+
+### 🎨 创作中心
+- 剧本创作
+- 视频分镜
+- 生资产创作
+- 创作模板
+
+### 👤 用户中心
+- 个人仪表盘
+- 下载中心
+- 我的收藏
+- 个人设置
+- 用户主页
+
+### 🗣️ 社区与市场
+- 社区交流
+- 帖子详情
+- 市场展示
+- 搜索功能
+
+## 🛠️ 技术栈
 
 ### 前端
-- **框架**：Vue 3 + TypeScript
-- **构建**：Vite
-- **UI**：Ant Design Vue / TailwindCSS
-- **状态管理**：Pinia
-- **HTTP 客户端**：Axios
+- **Vue 3** - 渐进式 JavaScript 框架
+- **Ant Design Vue** - 企业级 UI 组件库
+- **Pinia** - 新一代状态管理
+- **Vue Router** - 官方路由管理器
+- **TypeScript** - 类型安全的 JavaScript
+- **Tailwind CSS** - 原子化 CSS 框架
+- **Vite** - 下一代前端构建工具
 
-### AI/ML
-- **剧本生成**：ChatGLM-6B / API
-- **文本转视频**：ModelScope
-- **图片生成**：Stable Diffusion（可选）
+### 后端
+- **Node.js** - JavaScript 运行时
+- **Express** - 轻量级 Web 框架
+- **TypeScript** - 类型安全
+- **MongoDB** - NoSQL 数据库
+- **Mongoose** - MongoDB 对象建模
+- **JWT** - JSON Web Token 认证
+- **Zod** - 数据验证
+- **Winston** - 日志管理
 
-## 🏗️ 项目结构
-
-```
-midodo-/
-├── backend/                    # Medusa 后端
-│   ├── src/
-│   │   ├── models/            # 数据模型（Script, Order, Creator等）
-│   │   ├── services/          # 业务服务
-│   │   ├── routes/            # API 路由
-│   │   ├── jobs/              # 异步任务（视频转换、邮件等）
-│   │   ├── ai/                # AI 模块集成
-│   │   ├── middlewares/       # 中间件
-│   │   ├── utils/             # 工具函数
-│   │   └── index.ts           # 入口
-│   ├── migrations/            # 数据库迁移
-│   ├── package.json
-│   ├── tsconfig.json
-│   └── .env.example
-├── frontend/                   # Vue 3 前端
-│   ├── src/
-│   │   ├── components/        # 组件库
-│   │   ├── pages/             # 页面
-│   │   ├── stores/            # 状态管理（Pinia）
-│   │   ├── services/          # API 服务
-│   │   ├── assets/            # 静态资源
-│   │   ├── types/             # TypeScript 类型定义
-│   │   ├── App.vue
-│   │   └── main.ts
-│   ├── vite.config.ts
-│   ├── package.json
-│   └── .env.example
-├── docker-compose.yml         # 本地开发环境
-├── .env.example               # 环境变量模板
-├── .gitignore
-├── docs/                      # 文档
-└── scripts/                   # 初始化脚本
-```
+### 基础设施
+- **Docker** - 容器化技术
+- **Nginx** - 高性能 Web 服务器
+- **Docker Compose** - 多容器编排
 
 ## 🚀 快速开始
 
-### 前置要求
-- Node.js 18+
-- PostgreSQL 14+
-- Redis 7+
-- Docker & Docker Compose
-
-### 一键启动（推荐）
+### 方式一：一键启动（推荐）
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/damiyoyo520-pixel/midodo-.git
-cd midodo-
+# 克隆或进入项目目录
+cd /workspace
 
-# 2. 启动本地开发环境（Docker）
+# 运行快速启动脚本
+./quick-start.sh
+```
+
+### 方式二：使用 Docker Compose
+
+```bash
+# 1. 创建环境配置文件
+cp .env.example .env
+# 编辑 .env 文件，修改 JWT_SECRET 等配置
+
+# 2. 构建并启动所有服务
+docker-compose -f docker-compose.prod.yml up -d --build
+
+# 3. 查看服务状态
+docker-compose -f docker-compose.prod.yml ps
+
+# 4. 查看日志
+docker-compose -f docker-compose.prod.yml logs -f
+```
+
+### 方式三：本地开发
+
+```bash
+# 1. 安装依赖
+npm install
+
+# 2. 启动数据库
 docker-compose up -d
 
-# 3. 等待数据库就绪（约 30 秒）
-sleep 30
-
-# 4. 后端初始化
+# 3. 启动后端服务
 cd backend
 npm install
-npm run db:migrate
-npm run db:seed
 npm run dev
 
-# 5. 新终端启动前端
-cd ../frontend
+# 4. 启动前端服务（新终端）
+cd frontend
 npm install
 npm run dev
 ```
 
-### 访问地址
-- 🌐 **前端**：http://localhost:5173
-- 🔧 **后端 API**：http://localhost:9000
-- 👨‍💼 **Admin 面板**：http://localhost:7001
-- 📦 **Minio（文件存储）**：http://localhost:9001
-  - 用户名：minioadmin
-  - 密码：minioadmin
+访问地址：
+- 前端应用: http://localhost:5173
+- 后端 API: http://localhost:3000
 
-### 环境变量配置
+## 📁 项目结构
+
+```
+/workspace/
+├── backend/                 # 后端服务
+│   ├── src/
+│   │   ├── models/         # 数据模型
+│   │   ├── routes/         # API 路由
+│   │   ├── middleware/     # 中间件
+│   │   ├── utils/          # 工具函数
+│   │   ├── scripts/        # 脚本工具
+│   │   └── index.ts        # 入口文件
+│   ├── Dockerfile
+│   ├── package.json
+│   └── tsconfig.json
+├── frontend/               # 前端应用
+│   ├── src/
+│   │   ├── pages/         # 页面组件
+│   │   ├── router/        # 路由配置
+│   │   ├── stores/        # Pinia 状态
+│   │   ├── services/      # API 服务
+│   │   ├── styles/        # 全局样式
+│   │   ├── App.vue        # 根组件
+│   │   └── main.ts        # 入口文件
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── package.json
+├── docker-compose.yml     # 开发环境配置
+├── docker-compose.prod.yml # 生产环境配置
+├── DEPLOYMENT.md          # 完整部署指南
+├── quick-start.sh         # 快速启动脚本
+└── README.md              # 项目文档
+```
+
+## 📋 完整部署指南
+
+详细的部署说明请查看 [DEPLOYMENT.md](./DEPLOYMENT.md)，包含：
+- 环境准备
+- 生产环境部署
+- 本地开发配置
+- API 文档
+- 常见问题排查
+- 生产环境优化建议
+
+## 🎯 功能演示流程
+
+1. **注册账号** - 创建新用户
+2. **浏览剧本** - 在首页或专区浏览精选剧本
+3. **查看详情** - 点击剧本查看详细信息
+4. **购买剧本** - 选择剧本并完成购买流程
+5. **查看订单** - 在用户中心查看购买记录
+6. **创作中心** - 尝试创作新剧本
+
+## 🔧 开发命令
 
 ```bash
-# 复制环境变量模板
-cp .env.example .env
+# 根目录
+npm run dev              # 同时启动前后端开发服务
+npm run build            # 构建前后端
+npm run install:all      # 安装所有依赖
 
-# 编辑 .env 填入你的 API 密钥
-vim .env
+# 后端
+cd backend
+npm run dev              # 开发模式
+npm run build            # 构建
+npm run seed             # 初始化测试数据
+npm run test             # 运行测试
+
+# 前端
+cd frontend
+npm run dev              # 开发模式
+npm run build            # 构建
+npm run preview          # 预览构建结果
 ```
-
-关键配置项：
-```env
-# 数据库
-DATABASE_URL=postgres://drama_user:drama_password@localhost:5432/drama_db
-
-# Redis
-REDIS_URL=redis://localhost:6379
-
-# AI 配置
-CHATGLM_API_KEY=your_key
-MODELSCOPE_API_KEY=your_key
-
-# 支付配置
-ALIBABA_APPID=your_id
-WECHAT_APPID=your_id
-```
-
-## 📚 文档
-
-- [后端开发指南](./docs/backend-guide.md)
-- [前端开发指南](./docs/frontend-guide.md)
-- [AI 集成指南](./docs/ai-integration.md)
-- [API 文档](./docs/api-docs.md)
-- [部署指南](./docs/deployment.md)
-- [数据库设计](./docs/database-schema.md)
-
-## 🔄 工作流程
-
-### 创作者创建短剧
-```
-创作者输入关键词
-    ↓
-AI 生成剧本框架
-    ↓
-创作者编辑调整
-    ↓
-AI 生成短视频预览
-    ↓
-发布到交易平台
-```
-
-### 买家购买剧本
-```
-浏览剧本/视频
-    ↓
-选择使用权限
-    ↓
-支付（支付宝/微信）
-    ↓
-获得授权下载
-    ↓
-创作者获得收益
-```
-
-## 🧪 API 示例
-
-### 生成剧本
-```bash
-curl -X POST http://localhost:9000/admin/scripts/generate \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "title": "办公室爱情故事",
-    "theme": "都市情感",
-    "keywords": ["上班族", "职场", "爱情"],
-    "length": "short",
-    "style": "comedy"
-  }'
-```
-
-### 创建订单
-```bash
-curl -X POST http://localhost:9000/store/orders \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "script_id": "script_123",
-    "usage_rights": ["personal_use", "commercial"],
-    "payment_method": "alipay"
-  }'
-```
-
-## 🐳 Docker 命令
-
-```bash
-# 启动所有服务
-docker-compose up -d
-
-# 查看日志
-docker-compose logs -f
-
-# 停止服务
-docker-compose down
-
-# 删除所有数据（谨慎！）
-docker-compose down -v
-```
-
-## 🧪 测试
-
-```bash
-# 后端测试
-cd backend && npm test
-
-# 前端测试
-cd ../frontend && npm test
-
-# 代码检查
-npm run lint
-```
-
-## 📦 生产部署
-
-### Docker 生产构建
-```bash
-docker build -f backend/Dockerfile -t drama-backend:latest .
-docker build -f frontend/Dockerfile -t drama-frontend:latest .
-```
-
-### Kubernetes 部署
-```bash
-kubectl apply -f k8s/
-```
-
-详见 [部署指南](./docs/deployment.md)
 
 ## 🤝 贡献指南
 
-欢迎 PR 和 Issue！请确保：
-1. 代码通过 ESLint 检查
-2. 编写单元测试
-3. 更新相关文档
-
-## 📝 提交规范
-
-```
-<type>(<scope>): <subject>
-
-<body>
-
-<footer>
-```
-
-Type:
-- feat: 新功能
-- fix: 修复
-- docs: 文档
-- style: 格式
-- refactor: 重构
-- test: 测试
-- chore: 构建
+欢迎贡献代码、报告问题或提出建议！
 
 ## 📄 许可证
 
-MIT License - 详见 [LICENSE](./LICENSE)
-
-## 💬 联系方式
-
-- GitHub Issues：用于bug报告和功能建议
-- Email：damiyoyo520-pixel@example.com
-- Discord：[加入我们的社区](your-discord-link)
-
-## ⭐ 支持我们
-
-如果这个项目对你有帮助，请给个 Star！
+MIT License
 
 ---
 
-**最后更新**：2024年
-**版本**：v0.1.0 (MVP)
+**让创意更有价值** ✨
