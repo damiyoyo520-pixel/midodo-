@@ -1,258 +1,135 @@
 <template>
-  <a-config-provider :locale="zhCN">
-    <div id="app">
-      <a-layout class="app-layout">
-        <a-layout-header class="app-header">
-          <div class="header-container">
-            <router-link to="/" class="logo">
-              <span class="logo-icon">🎬</span>
-              <span class="logo-text">短剧创作交易平台</span>
-            </router-link>
+  <div id="app">
+    <!-- 导航栏 -->
+    <nav class="nav-container">
+      <div class="nav-content">
+        <router-link to="/" class="nav-logo">
+          <span class="logo-icon">🎬</span>
+          <span class="logo-text">短剧创作交易平台</span>
+        </router-link>
+        
+        <div class="nav-menu">
+          <router-link to="/" class="nav-link" :class="{ active: $route.path === '/' || $route.path === '/home' }">首页</router-link>
+          <router-link to="/scripts" class="nav-link" :class="{ active: $route.path === '/scripts' }">剧本市场</router-link>
+          <router-link to="/workspace" class="nav-link" :class="{ active: $route.path.startsWith('/workspace') }">创作中心</router-link>
+          <router-link to="/templates" class="nav-link" :class="{ active: $route.path === '/templates' }">创作模板</router-link>
+          <router-link to="/community" class="nav-link" :class="{ active: $route.path === '/community' }">社区交流</router-link>
+        </div>
 
-            <a-menu
-              v-model:selectedKeys="currentMenu"
-              mode="horizontal"
-              class="nav-menu"
-              @click="handleMenuClick"
-            >
-              <a-menu-item key="home">
-                <HomeOutlined />
-                首页
-              </a-menu-item>
-              <a-menu-item key="scripts">
-                <AppstoreOutlined />
-                剧本市场
-              </a-menu-item>
-              <a-sub-menu key="zones">
-                <template #title>
-                  <CompassOutlined />
-                  专区入口
-                </template>
-                <a-menu-item key="zone-global">海外专区</a-menu-item>
-                <a-menu-item key="zone-culture">文旅专区</a-menu-item>
-                <a-menu-item key="zone-heritage">非遗专区</a-menu-item>
-              </a-sub-menu>
-              <a-menu-item key="community">
-                <TeamOutlined />
-                社区交流
-              </a-menu-item>
-              <a-menu-item key="workspace">
-                <EditOutlined />
-                创作中心
-              </a-menu-item>
-            </a-menu>
-
-            <div class="header-actions">
-              <template v-if="isAuthenticated">
-                <a-dropdown>
-                  <a-button type="text" class="user-button">
-                    <a-avatar :size="32" style="background-color: var(--primary-red); margin-right: 8px;">
-                      {{ user?.username?.charAt(0)?.toUpperCase() || 'U' }}
-                    </a-avatar>
-                    {{ user?.username || '用户' }}
-                    <DownOutlined />
-                  </a-button>
-                  <template #overlay>
-                    <a-menu @click="handleUserMenuClick">
-                      <a-menu-item key="dashboard">
-                        <DashboardOutlined />
-                        仪表盘
-                      </a-menu-item>
-                      <a-menu-item key="orders">
-                        <ShoppingCartOutlined />
-                        我的订单
-                      </a-menu-item>
-                      <a-menu-item key="favorites">
-                        <StarOutlined />
-                        收藏
-                      </a-menu-item>
-                      <a-menu-divider />
-                      <a-menu-item key="settings">
-                        <SettingOutlined />
-                        设置
-                      </a-menu-item>
-                      <a-menu-item key="logout">
-                        <LogoutOutlined />
-                        退出登录
-                      </a-menu-item>
-                    </a-menu>
-                  </template>
-                </a-dropdown>
-              </template>
-              <template v-else>
-                <router-link to="/login">
-                  <a-button type="text">登录</a-button>
-                </router-link>
-                <router-link to="/register">
-                  <a-button type="primary">注册</a-button>
-                </router-link>
-              </template>
-            </div>
+        <div class="nav-actions">
+          <router-link to="/login" v-if="!userStore.isAuthenticated">
+            <button class="btn-outline">登录</button>
+          </router-link>
+          <router-link to="/register" v-if="!userStore.isAuthenticated">
+            <button class="btn-primary">注册</button>
+          </router-link>
+          <div v-else class="user-info">
+            <router-link to="/workspace" class="user-avatar">{{ userStore.user?.username?.charAt(0).toUpperCase() }}</router-link>
+            <button @click="handleLogout" class="btn-outline">退出</button>
           </div>
-        </a-layout-header>
+        </div>
+      </div>
+    </nav>
 
-        <a-layout-content class="app-content">
-          <router-view />
-        </a-layout-content>
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
+    </main>
 
-        <a-layout-footer class="app-footer">
-          <div class="footer-content">
-            <p>© 2026 短剧创作交易平台 - 让创意更有价值</p>
+    <!-- 底部 -->
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-section">
+          <div class="footer-logo">
+            <span class="logo-icon">🎬</span>
+            <span class="logo-text">短剧创作交易平台</span>
           </div>
-        </a-layout-footer>
-      </a-layout>
-    </div>
-  </a-config-provider>
+          <p class="footer-desc">连接创意与市场，让每一个故事闪耀光芒</p>
+        </div>
+        <div class="footer-section">
+          <h4>快速链接</h4>
+          <router-link to="/scripts">剧本市场</router-link>
+          <router-link to="/workspace">创作中心</router-link>
+          <router-link to="/templates">创作模板</router-link>
+          <router-link to="/community">社区交流</router-link>
+        </div>
+        <div class="footer-section">
+          <h4>关于我们</h4>
+          <a href="#">平台介绍</a>
+          <a href="#">使用条款</a>
+          <a href="#">隐私政策</a>
+          <a href="#">联系我们</a>
+        </div>
+        <div class="footer-section">
+          <h4>联系方式</h4>
+          <p>📧 contact@dramaplat.com</p>
+          <p>📱 客服微信: dramaplat</p>
+          <p>🏢 北京市朝阳区</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 短剧创作交易平台 - 让创意更有价值. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { message } from 'ant-design-vue'
-import zhCN from 'ant-design-vue/es/locale/zh_CN'
-import {
-  HomeOutlined,
-  AppstoreOutlined,
-  TeamOutlined,
-  EditOutlined,
-  DashboardOutlined,
-  ShoppingCartOutlined,
-  StarOutlined,
-  SettingOutlined,
-  LogoutOutlined,
-  DownOutlined,
-  CompassOutlined
-} from '@ant-design/icons-vue'
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from './stores/auth';
 
-const router = useRouter()
-const route = useRoute()
-const authStore = useAuthStore()
+const userStore = useAuthStore();
 
-const isAuthenticated = computed(() => authStore.isAuthenticated)
-const user = computed(() => authStore.user)
-
-const currentMenu = ref<string[]>(['home'])
-
-const updateCurrentMenu = () => {
-  const path = route.path
-  if (path === '/' || path.startsWith('/home')) {
-    currentMenu.value = ['home']
-  } else if (path.startsWith('/scripts')) {
-    currentMenu.value = ['scripts']
-  } else if (path.startsWith('/community')) {
-    currentMenu.value = ['community']
-  } else if (path.startsWith('/workspace')) {
-    currentMenu.value = ['workspace']
-  }
-}
-
-watch(
-  () => route.path,
-  () => {
-    updateCurrentMenu()
-  },
-  { immediate: true }
-)
-
-const handleMenuClick = ({ key }: { key: string }) => {
-  switch (key) {
-    case 'home':
-      router.push('/home')
-      break
-    case 'scripts':
-      router.push('/scripts')
-      break
-    case 'zone-global':
-      router.push('/zone/global')
-      break
-    case 'zone-culture':
-      router.push('/zone/culture')
-      break
-    case 'zone-heritage':
-      router.push('/zone/heritage')
-      break
-    case 'community':
-      router.push('/community')
-      break
-    case 'workspace':
-      router.push('/workspace')
-      break
-  }
-}
-
-const handleUserMenuClick = ({ key }: { key: string }) => {
-  switch (key) {
-    case 'dashboard':
-      router.push('/dashboard')
-      break
-    case 'orders':
-      router.push('/orders')
-      break
-    case 'favorites':
-      router.push('/favorites')
-      break
-    case 'settings':
-      router.push('/settings')
-      break
-    case 'logout':
-      authStore.logout()
-      message.success('已退出登录')
-      router.push('/home')
-      break
-  }
-}
+const handleLogout = () => {
+  userStore.logout();
+};
 </script>
 
-<style>
-@import './styles/globals.css';
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
+<style scoped>
+/* 全局 */
 #app {
-  min-height: 100vh;
-}
-
-.app-layout {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #0a0a0a;
+  color: white;
 }
 
-.app-header {
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+/* 导航栏 */
+.nav-container {
   position: sticky;
   top: 0;
-  z-index: 100;
-  padding: 0;
-  line-height: normal;
-  height: auto;
+  z-index: 1000;
+  background: linear-gradient(180deg, rgba(15, 15, 15, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
+  border-bottom: 1px solid #374151;
+  backdrop-filter: blur(10px);
 }
 
-.header-container {
+.nav-content {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 24px;
   display: flex;
   align-items: center;
-  height: 64px;
-  gap: 32px;
+  justify-content: space-between;
+  height: 70px;
 }
 
-.logo {
+.nav-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
-  color: var(--text-primary);
-  font-weight: 700;
   font-size: 18px;
+  font-weight: 700;
+  transition: transform 0.2s;
+}
+
+.nav-logo:hover {
+  transform: scale(1.02);
 }
 
 .logo-icon {
@@ -260,74 +137,235 @@ body {
 }
 
 .logo-text {
-  white-space: nowrap;
+  background: linear-gradient(135deg, #dc2626 0%, #ff6b6b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .nav-menu {
-  flex: 1;
-  border-bottom: none;
-  line-height: 64px;
-}
-
-.nav-menu :deep(.ant-menu-item-selected) {
-  color: var(--primary-red) !important;
-}
-
-.nav-menu :deep(.ant-menu-item-selected::after) {
-  border-bottom-color: var(--primary-red) !important;
-}
-
-.header-actions {
   display: flex;
-  align-items: center;
   gap: 8px;
 }
 
-.user-button {
+.nav-link {
+  padding: 10px 20px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  color: white;
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.nav-link.active {
+  color: white;
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(185, 28, 28, 0.2) 100%);
+}
+
+.nav-actions {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 
-.header-actions a {
+.btn-primary {
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(220, 38, 38, 0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: white;
+  border: 1px solid #374151;
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  border-color: #dc2626;
+  background: rgba(220, 38, 38, 0.1);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
   text-decoration: none;
+  transition: transform 0.2s;
 }
 
-.app-content {
+.user-avatar:hover {
+  transform: scale(1.1);
+}
+
+/* 主内容区 */
+.main-content {
   flex: 1;
-  background: var(--bg-gray);
+  min-height: calc(100vh - 70px - 400px);
 }
 
-.app-footer {
-  background: #ffffff;
-  text-align: center;
-  padding: 32px 24px;
-  border-top: 1px solid var(--border-light);
-  color: var(--text-tertiary);
+/* 页面过渡 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.2s ease;
 }
 
-.footer-content p {
-  color: var(--text-tertiary);
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* 底部 */
+.footer {
+  background: #1f2937;
+  border-top: 1px solid #374151;
+  padding: 48px 24px 24px;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 32px;
+}
+
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-section h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  margin: 0 0 8px 0;
+}
+
+.footer-section a,
+.footer-section p {
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
   margin: 0;
 }
 
+.footer-section a:hover {
+  color: #dc2626;
+}
+
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.footer-logo .logo-icon {
+  font-size: 32px;
+}
+
+.footer-logo .logo-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+}
+
+.footer-desc {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid #374151;
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: #6b7280;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* 响应式 */
 @media (max-width: 1024px) {
   .nav-menu {
     display: none;
   }
+
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
 }
 
-@media (max-width: 768px) {
-  .header-container {
+@media (max-width: 640px) {
+  .nav-content {
     padding: 0 16px;
-    gap: 16px;
+    height: 60px;
   }
 
   .logo-text {
     display: none;
   }
 
-  .header-actions {
-    margin-left: auto;
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .btn-primary,
+  .btn-outline {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 }
 </style>
